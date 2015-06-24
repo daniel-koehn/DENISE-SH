@@ -1,9 +1,9 @@
 # DENISE-SH
-DENISE SH
+DENISE-SH
 
 2D time-domain isotropic (visco)elastic finite-difference modeling and full waveform inversion (FWI) code for SH-waves, which I developed together with Denise De Nil and Eva Dokter.
 
-A manual for the SH code is not available, but most features are similar to the P-SV code DENISE Black-Edition, for which a manual is available at:
+A manual for the SH code is not available, but most features are similar to the P-SV code DENISE-Black-Edition, for which a manual is available at:
 
 http://www.geophysik.uni-kiel.de/~dkoehn/software.htm
 
