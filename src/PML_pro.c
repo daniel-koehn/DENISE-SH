@@ -127,7 +127,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
             /* this taken from Gedney page 8.2 */
                K_x[i] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_x[i] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_x[i] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
 
             /* define damping profile at half the grid points */
@@ -139,7 +139,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
                /* this taken from Gedney page 8.2 */
                K_x_half[i] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_x_half[i] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_x_half[i] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
 
        /* just in case, for -5 at the end */
@@ -174,7 +174,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
             /* this taken from Gedney page 8.2 */
                K_x[h] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_x[h] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_x[h] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
 
             /* define damping profile at half the grid points */
@@ -186,7 +186,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
                /* this taken from Gedney page 8.2 */
                K_x_half[h] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_x_half[h] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_x_half[h] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
 
             /* just in case, for -5 at the end */
@@ -218,7 +218,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
           K_y_half[i] = 1.0;
           yval = DH * (i-1);
 
-          /* left boundary */
+          /* bottom boundary */
 
             /* define damping profile at the grid points */
             abscissa_in_PML = yoriginbottom - yval;
@@ -229,7 +229,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
             /* this taken from Gedney page 8.2 */
                K_y[i] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_y[i] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_y[i] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
 
             /* define damping profile at half the grid points */
@@ -241,7 +241,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
                /* this taken from Gedney page 8.2 */
                K_y_half[i] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_y_half[i] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_y_half[i] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
           b_y[i] = exp(- (d_y[i] / K_y[i] + alpha_prime_y[i]) * DT);
           b_y_half[i] = exp(- (d_y_half[i] / K_y_half[i] + alpha_prime_y_half[i]) * DT);
@@ -250,7 +250,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
           if(abs(d_y[i]) > 1.0e-6){ a_y[i] = d_y[i] * (b_y[i] - 1.0) / (K_y[i] * (d_y[i] + K_y[i] * alpha_prime_y[i]));}
           if(abs(d_y_half[i]) > 1.0e-6){ a_y_half[i] = d_y_half[i] * (b_y_half[i] - 1.0) / (K_y_half[i] * (d_y_half[i] + K_y_half[i] * alpha_prime_y_half[i]));}
 
-      } /* end of left boundary */ 
+      } /* end of bottom boundary */ 
 
       /* top boundary */
       for (i=NYG-FW+1;i<=NYG;i++){  
@@ -270,7 +270,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
             /* this taken from Gedney page 8.2 */
                K_y[h] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_y[h] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_y[h] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
 
             /* define damping profile at half the grid points */
@@ -282,7 +282,7 @@ void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float
 
                /* this taken from Gedney page 8.2 */
                K_y_half[h] = 1.0 + (k_max_PML - 1.0) * pow(abscissa_normalized,npower);
-               alpha_prime_y_half[h] = alpha_max_PML * (1.0 - abscissa_normalized);
+               alpha_prime_y_half[h] = alpha_max_PML * (1.0 - abscissa_normalized) + 0.1 * alpha_max_PML;
             }
 
           b_y[h] = exp(- (d_y[h] / K_y[h] + alpha_prime_y[h]) * DT);

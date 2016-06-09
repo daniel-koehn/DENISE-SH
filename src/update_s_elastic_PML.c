@@ -73,9 +73,9 @@ void update_s_elastic_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, flo
 	        /* top boundary */                                         
 	        if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
                                                 
-                        psi_vyy[j][i] = b_y[j] * psi_vyy[j][i] + a_y[j] * vyy;                                            
+                        psi_vyy[j][i] = b_y_half[j] * psi_vyy[j][i] + a_y_half[j] * vyy;                                            
                      
-                        vyy = vyy / K_y[j] + psi_vyy[j][i];
+                        vyy = vyy / K_y_half[j] + psi_vyy[j][i];
 
 	        }
 	
@@ -133,8 +133,8 @@ void update_s_elastic_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, flo
 	  /* top boundary */                                         
         if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
                                                 
-                        psi_vyy[j][i] = b_y[j] * psi_vyy[j][i] + a_y[j] * vyy;                                            
-                        vyy = vyy / K_y[j] + psi_vyy[j][i];
+                        psi_vyy[j][i] = b_y_half[j] * psi_vyy[j][i] + a_y_half[j] * vyy;                                            
+                        vyy = vyy / K_y_half[j] + psi_vyy[j][i];
                         
         }
 	
@@ -194,8 +194,8 @@ void update_s_elastic_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, flo
 	  /* top boundary */                                         
         if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
                                                 
-                        psi_vyy[j][i] = b_y[j] * psi_vyy[j][i] + a_y[j] * vyy;                                            
-                        vyy = vyy / K_y[j] + psi_vyy[j][i];
+                        psi_vyy[j][i] = b_y_half[j] * psi_vyy[j][i] + a_y_half[j] * vyy;                                            
+                        vyy = vyy / K_y_half[j] + psi_vyy[j][i];
                         
         }
 	
@@ -257,8 +257,8 @@ void update_s_elastic_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, flo
 	  /* top boundary */                                         
         if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
                                                 
-                        psi_vyy[j][i] = b_y[j] * psi_vyy[j][i] + a_y[j] * vyy;                                            
-                        vyy = vyy / K_y[j] + psi_vyy[j][i];
+                        psi_vyy[j][i] = b_y_half[j] * psi_vyy[j][i] + a_y_half[j] * vyy;                                            
+                        vyy = vyy / K_y_half[j] + psi_vyy[j][i];
 
         }
 	

@@ -82,8 +82,8 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 		/* top boundary */                                         
 		if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
 					   
-			   psi_syy_y[j][i] = b_y_half[j] * psi_syy_y[j][i] + a_y_half[j] * syy_y;                                                
-                           syy_y = syy_y / K_y_half[j] + psi_syy_y[j][i]; 
+			   psi_syy_y[j][i] = b_y[j] * psi_syy_y[j][i] + a_y[j] * syy_y;                                                
+                           syy_y = syy_y / K_y[j] + psi_syy_y[j][i]; 
                         
                     
 		}
@@ -157,8 +157,8 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 	  /* top boundary */                                         
         if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
 					   
-		                   psi_syy_y[j][i] = b_y_half[j] * psi_syy_y[j][i] + a_y_half[j] * syy_y;                                                
-                           syy_y = syy_y / K_y_half[j] + psi_syy_y[j][i]; 
+		                   psi_syy_y[j][i] = b_y[j] * psi_syy_y[j][i] + a_y[j] * syy_y;                                                
+                           syy_y = syy_y / K_y[j] + psi_syy_y[j][i]; 
                         
          }
 		
@@ -231,8 +231,8 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 	  /* top boundary */                                         
         if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
 					   
-		                   psi_syy_y[j][i] = b_y_half[j] * psi_syy_y[j][i] + a_y_half[j] * syy_y;                                                
-                           syy_y = syy_y / K_y_half[j] + psi_syy_y[j][i]; 
+		                   psi_syy_y[j][i] = b_y[j] * psi_syy_y[j][i] + a_y[j] * syy_y;                                                
+                           syy_y = syy_y / K_y[j] + psi_syy_y[j][i]; 
          }
 		
 
@@ -309,8 +309,8 @@ for (j=ny1;j<=ny2;j++){
 	  /* top boundary */                                         
         if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
 					   
-			   psi_syy_y[j][i] = b_y_half[j] * psi_syy_y[j][i] + a_y_half[j] * syy_y;                                                
-                           syy_y = syy_y / K_y_half[j] + psi_syy_y[j][i]; 
+			   psi_syy_y[j][i] = b_y[j] * psi_syy_y[j][i] + a_y[j] * syy_y;                                                
+                           syy_y = syy_y / K_y[j] + psi_syy_y[j][i]; 
                                  
 		}
 		

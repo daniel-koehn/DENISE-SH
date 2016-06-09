@@ -5,8 +5,8 @@
 # description/name of the model: Soil Compaction (SH) Hohenschulen
 #
 #-------------- Domain Decomposition -----------------------------
-number_of_processors_in_x-direction_(NPROCX) = 4
-number_of_processors_in_y-direction_(NPROCY) = 4
+number_of_processors_in_x-direction_(NPROCX) = 2
+number_of_processors_in_y-direction_(NPROCY) = 3
 #
 #-------------------- FD order -----------------------------------
 # Order of ssg FD coefficients (values: 2, 4, ..., 12)
@@ -20,19 +20,19 @@ FD_ORDER = 8
 #         4 =                 E = 3.0 %
 max_relative_error = 1
 #-------------------- 2-D Grid -----------------------------------
-number_of_gridpoints_in_x-direction_(NX) = 272
-number_of_gridpoints_in_y-direction_(NY) = 180
-distance_between_gridpoints(in_m)_(DH) = 0.05
+number_of_gridpoints_in_x-direction_(NX) = 1328
+number_of_gridpoints_in_y-direction_(NY) = 552
+distance_between_gridpoints(in_m)_(DH) = 0.1
 #
 # Note that y denotes the vertical direction !
 #
 #-------------------Time Stepping -------------------------------
-time_of_wave_propagation_(in_sec)_(TIME) = 0.1281
-timestep_(in_seconds)_(DT) = 2.5e-5
+time_of_wave_propagation_(in_sec)_(TIME) = 0.5
+timestep_(in_seconds)_(DT) =2.5e-5
 #
 #--------------------Source---------------------------------------
 # Shape_of_source-signal:
-(ricker=1;fumue=2;from_SOURCE_FILE=3;SIN**3=4;Gaussian_deriv=5;Spike=6)_(QUELLART) = 6
+(ricker=1;fumue=2;from_SOURCE_FILE=3;SIN**3=4;Gaussian_deriv=5;Spike=6)_(QUELLART) = 1
 point_source_(force_in_y=3)_(QUELLTYP) = 3
 angle_of_rotated_directed_source_relative_to_y_direction_(in_degree)_(ANGLE) = 0.0
 depth_of_plane_wave_excitation_(no<=0)_(in_meter)_(PLANE_WAVE_DEPTH) = 0.0
@@ -40,36 +40,36 @@ dip_of_plane_wave_from_vertical_(in_degrees)_(PHI) = 0.0
 SIGNAL_FILE = ./wavelet/wavelet_profile2 
 duration_of_source-signal_(in_seconds)_(TS) = 0.032
 read_source_positions_from_SOURCE_FILE_(yes=1)_(SRCREC) = 1
-SOURCE_FILE = ./source/source_Hohenschulen_SH.dat 
+SOURCE_FILE = ./source/sr0_src_corr.dat 
 run_multiple_shots_defined_in_SOURCE_FILE_(yes=1)_(RUN_MULTIPLE_SHOTS) = 1
 #
 #
 #--------------------- Model -------------------------------------
 read_model_parameters_from_MFILE(yes=1)(READMOD) = 1
-MFILE = start/Hohenschulen_hh
+MFILE = start/sr0_corr
 #
 #---------------------Q-approximation-----------------------------
-Number_of_relaxation_mechanisms_(L) = 3
+Number_of_relaxation_mechanisms_(L) = 0
 L_Relaxation_frequencies_(FL) = 17.2007  137.6888  516.9171
 Tau_(TAU) = 0.4311
 #
 #----------------------Free Surface-------------------------------
-free_surface_(yes=1)(FREE_SURF) = 1
+free_surface_(yes=1)(FREE_SURF) = 0
 #
 #--------------------PML Boundary---------------------------
 # quadratic damping applied
-width_of_absorbing_frame_(in_gridpoints)_(No<=0)_(FW) = 10
-Damping_velocity_in_CPML_(in_m/s)_(DAMPING) = 100.0
-Frequency_within_the_PML_(Hz)_(FPML) = 100.0
+width_of_absorbing_frame_(in_gridpoints)_(No<=0)_(FW) = 20
+Damping_velocity_in_CPML_(in_m/s)_(DAMPING) = 250.0
+Frequency_within_the_PML_(Hz)_(FPML) = 50
 # apply_periodic_boundary_condition_at_edges_(BOUNDARY):
 (no=0)_(left_and_right=1) = 0
 #
 #----------------------Snapshots----------------------------------
 output_of_snapshots_(SNAP)(yes>0) = 0
 # output of particle velocity vy: SNAP=1
-first_snapshot_(in_sec)_(TSNAP1) = 0.02
+first_snapshot_(in_sec)_(TSNAP1) = 0.0001
 last_snapshot_(in_sec)_(TSNAP2) = 0.4
-increment_(in_sec)_(TSNAPINC) = 0.02
+increment_(in_sec)_(TSNAPINC) = 0.005
 increment_x-direction_(IDX) = 1
 increment_y-direction_(IDY) = 1
 data-format_(SNAP_FORMAT)(ASCII(2);BINARY(3)) = 3
@@ -80,7 +80,7 @@ output_of_seismograms_(SEISMO) = 1
 # SEISMO=0: no seismograms
 # SEISMO=1: particle-velocity vy
 read_receiver_positions_from_file_(yes=1)_(READREC) = 1
-REC_FILE = ./receiver/receiver_Hohenschulen_SH.dat 
+REC_FILE = ./receiver/sr0_rec_corr.dat 
 reference_point_for_receiver_coordinate_system_(REFREC) = 0.0 , 0.0
 # if READREC=1 the following three lines are ignored 
 position_of_first_receiver_(in_m)_(XREC1,YREC1) =  6.0 , 0.2
@@ -101,8 +101,8 @@ samplingrate_(in_timesteps!)_(NDT) = 1
 data-format_(SU(1);ASCII(2);BINARY(3)) = 1
 # output files for seismograms
 # particle velocities (if SEISMO=1 or SEISMO=4)
-filename_for_Vx_(SEIS_FILE_VX) = su/DENISE_soil_3layers_x.su
-filename_for_Vy_(SEIS_FILE_VY) = su/DENISE_soil_3layers_y.su
+filename_for_Vx_(SEIS_FILE_VX) = su/DENISE_sr0_x.su
+filename_for_Vy_(SEIS_FILE_VY) = su/DENISE_sr0_y.su
 # curl and div of wavefield (if SEISMO=3 or SEISMO=4)
 filename_for_curl_(SEIS_FILE_CURL) = su/2layer_rot.su
 filename_for_div_(SEIS_FILE_DIV) = su/2layer_div.su
@@ -122,13 +122,13 @@ checkpoint_file_(CHECKPTFILE) = tmp/checkpoint_fdveps
 # DENISE_elastic specific parameters
 number_of_TDFWI_iterations_(ITERMAX) =  600
 output_of_jacobian_(JACOBIAN) = jacobian/jacobian
-seismograms_of_measured_data_(DATA_DIR) = su/soil/DENISE_soil_SH
+seismograms_of_measured_data_(DATA_DIR) = su/soil/sr0_raw
 cosine_taper_(yes=1/no=0)_(TAPER) = 0
 taper_length_(in_rec_numbers)_(TAPERLENGTH) = 5
 Inverse_Type_(gradient=1/complete=2)_(INVTYPE) = 2
 gradient_taper_geometry_(GRADT1,GRADT2,GRADT3,GRADT4) = 21, 26, 490, 500
 type_of_material_parameters_to_invert_(Vs,rho=1/Zs,rho=2/mu,rho=3)_(INVMAT1) = 1
-forward_modelling_only_(yes=10)_FWT_(yes=0)_(INVMAT) = 0
+forward_modelling_only_(yes=10)_FWT_(yes=0)_(INVMAT) = 10
 point_source_backpropagation_(y_comp=2)_(QUELLTYPB) = 2
 #
 #
@@ -141,7 +141,7 @@ apply_vertical_taper_(yes=1)_(SWS_TAPER_GRAD_VERT) = 0
 # Horizontal taper
 apply_horizontal_taper_(yes=1)_(SWS_TAPER_GRAD_HOR) = 0
 # Circular taper around all sources (not at receiver positions)
-apply_cylindrical_taper_(yes=1)_(SWS_TAPER_GRAD_SOURCES) = 0
+apply_cylindrical_taper_(yes=1)_(SWS_TAPER_GRAD_SOURCES) = 21
 apply_cylindrical_taper_per_shot_(yes=1)_(SWS_TAPER_CIRCULAR_PER_SHOT) = 0
 (1=error_function,2=log_function)_(SRTSHAPE) = 1
 radius_in_m_(SRTRADIUS) = 5.0
@@ -174,32 +174,32 @@ increment_between_saved_gradients_(nf_jac) = 2000
 #
 #
 # ----- Upper and lower limits for model parameters ----- #
-upper_limit_for_vp/lambda_(VPUPPERLIM) = 3500
-lower_limit_for_vp/lambda_(VPLOWERLIM) = 0
-upper_limit_for_vs/mu_(VSUPPERLIM) = 300.0
-lower_limit_for_vs/mu_(VSLOWERLIM) = 0.0
+upper_limit_for_vp/lambda_(VPUPPERLIM) = 2000
+lower_limit_for_vp/lambda_(VPLOWERLIM) = 300
+upper_limit_for_vs/mu_(VSUPPERLIM) = 800.0
+lower_limit_for_vs/mu_(VSLOWERLIM) = 150.0
 upper_limit_for_rho_(RHOUPPERLIM) = 3000
 lower_limit_for_rho_(RHOLOWERLIM) = 1000.0
 #
 #
 # ----- PML parameters ----- #
-npower = 4.0;
-k_max_PML = 1.0;
+npower = 2.0
+k_max_PML = 7.0
 #
 #
 # ----- Hessian calculation and Gradient-method ------ #
 calculate_hessian_only_(HESSIAN) = 0
 minimum_frequency_for_Hessian_calculation_(FC_HESS_START) = 2.5
 frequency_increment_for_Hessian_calculation_(FC_HESS_INC) = 2.5
-number_of_frequencies_for_Hessian_calculation_(NFREQ) = 20
-corner_frequency_of_lowpass_filter_(FC_HESSIAN) = 200.0
+number_of_frequencies_for_Hessian_calculation_(NFREQ) = 10
+corner_frequency_of_lowpass_filter_(FC_HESSIAN) = 80.0
 order_of_lowpass_filter_(ORDER_HESSIAN) = 6
 gradient_method_(PCG=1/LBFGS=2/GRADIENT=3)_(GRAD_METHOD) = 1
 #
 #
 #----- Definition of smoothing the models vp and vs ----- #
-apply_spatial_filtering_(1=yes)_(MODEL_FILTER) = 0
-filter_length_in_gridpoints_(FILT_SIZE) = 5
+apply_spatial_filtering_(1=yes)_(MODEL_FILTER) = 1
+filter_length_in_gridpoints_(FILT_SIZE) = 10
 #
 #
 #----- Definition of inversion for source time function ------#
@@ -211,9 +211,9 @@ inversion_of_stf_from_inversion_step_number_(N_STF_START) = 1
 #
 #----- Frequency filtering during inversion ------#
 apply_frquency_filtering_during_inversion_(yes=1)_(TIME_FILT) = 0
-starting_at_frequency_in_Hz_(FC_START) = 300.0
+starting_at_frequency_in_Hz_(FC_START) = 10.0
 maximum_frequency_in_Hz_(FC_END) = 300.0
-increment_between_used_frequencys_in_Hz_(FC_INCR) = 1.0
+increment_between_used_frequencys_in_Hz_(FC_INCR) = 20.0
 order_of_lowpass_filter_(ORDER) = 6
 #
 #
@@ -252,7 +252,7 @@ damping_factor_eg_10000_(GAMMA)	= 100000
 #
 #
 #----- Normalize -----#
-normalize_measured_and_synthetic_data_(yes=1)_(NORMALIZE) = 0
+normalize_measured_and_synthetic_data_(yes=1)_(NORMALIZE) = 1
 #
 #----- MISFIT LOG FILE -----#
 log_file_for_misfit_evolution_(MISFIT_LOG_FILE) = LOG_TEST.dat
@@ -274,5 +274,4 @@ filter_length_in_gridpoints_(FILT_SIZE_GRAD) = 5
 activate_time_lapse_mode_(yes=1)_(TIMELAPSE) = 0
 # if TIMELAPSE == 1, DATA_DIR should be the directory containing the data differences
 # between time t0 and t1 
-seismograms_of_synthetic_data_at_t0_(DATA_DIR_T0) = su/MARMOUSI_10Hz_syn_data_time_0/DENISE_MARMOUSI
-#
+seismograms_of_synthetic_data_at_t0_(DATA_DIR_T0) = su/MARMOUSI_10Hz_syn_data_time_0/DENISE_MARMOUSId
