@@ -110,7 +110,7 @@ void update_s_visc_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, float 
 		          sumr=sumq=0.0;
 		          for (l=1;l<=L;l++){
 			     r[j][i][l] = bip[l]*(r[j][i][l]*cip[l]-(dip[j][i][l]*vyx));
-			     p[j][i][l] = bjm[l]*(p[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
+			     q[j][i][l] = bjm[l]*(q[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
 			     sumr += r[j][i][l];
 		 	     sumq += q[j][i][l];
 		          }
@@ -194,7 +194,7 @@ void update_s_visc_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, float 
 		          sumr=sumq=0.0;
 		          for (l=1;l<=L;l++){
 			     r[j][i][l] = bip[l]*(r[j][i][l]*cip[l]-(dip[j][i][l]*vyx));
-			     p[j][i][l] = bjm[l]*(p[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
+			     q[j][i][l] = bjm[l]*(q[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
 			     sumr += r[j][i][l];
 		 	     sumq += q[j][i][l];
 		          }
@@ -280,7 +280,7 @@ void update_s_visc_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, float 
 		          sumr=sumq=0.0;
 		          for (l=1;l<=L;l++){
 			     r[j][i][l] = bip[l]*(r[j][i][l]*cip[l]-(dip[j][i][l]*vyx));
-			     p[j][i][l] = bjm[l]*(p[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
+			     q[j][i][l] = bjm[l]*(q[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
 			     sumr += r[j][i][l];
 		 	     sumq += q[j][i][l];
 		          }
@@ -370,7 +370,7 @@ void update_s_visc_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, float 
 		          sumr=sumq=0.0;
 		          for (l=1;l<=L;l++){
 			     r[j][i][l] = bip[l]*(r[j][i][l]*cip[l]-(dip[j][i][l]*vyx));
-			     p[j][i][l] = bjm[l]*(p[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
+			     q[j][i][l] = bjm[l]*(q[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
 			     sumr += r[j][i][l];
 		 	     sumq += q[j][i][l];
 		          }
@@ -432,7 +432,7 @@ void update_s_visc_PML(int nx1, int nx2, int ny1, int ny2, float **   vy, float 
 				sumr=sump=sumq=0.0;
 				for (l=1;l<=L;l++){
 					r[j][i][l] = bip[l]*(r[j][i][l]*cip[l]-(dip[j][i][l]*vyx));
-					p[j][i][l] = bjm[l]*(p[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
+					q[j][i][l] = bjm[l]*(q[j][i][l]*cjm[l]-(d[j][i][l]*vyy));
 					sumr += r[j][i][l];
 					sump += p[j][i][l];
 					sumq += q[j][i][l];
