@@ -1,8 +1,10 @@
 /*-------------------------------------------------------------
  *  Check FD-Grid for stability and grid dispersion.
  *  If the stability criterion is not fullfilled the program will
- *  terminate.                   
- *  last update  03/04/2004 
+ *  terminate.  
+ *
+ *  Daniel Koehn                 
+ *  last update  17/10/2016 
  *
  *  ----------------------------------------------------------*/
 
@@ -16,8 +18,8 @@ void checkfd_ssg_elastic(FILE *fp, float ** prho, float ** pu, float *hc){
 
 	/* local variables */
 
-	float  c, cmax_p=0.0, cmin_p=1e9, cmax_s=0.0, cmin_s=1e9, fmax, gamma;
-	float  cmax=0.0, cmin=1e9, dtstab, dhstab, cmax_r, cmin_r;
+	float  c, cmax_s=0.0, cmin_s=1e9, fmax, gamma;
+	float  cmax, cmin, dtstab, dhstab, cmax_r, cmin_r;
 	int nfw=iround(FW/DH);
 	int i, j, ny1=1, nx, ny, nx_min, ny_min;
 
@@ -30,52 +32,33 @@ void checkfd_ssg_elastic(FILE *fp, float ** prho, float ** pu, float *hc){
 	
 
 	/* find maximum model phase velocity of shear waves at infinite
-	      frequency within the whole model */
-		for (i=1+nfw;i<=(nx-nfw);i++){
-			for (j=ny1;j<=(ny-nfw);j++){
-			        
-				if(INVMAT1==3){
-				c=sqrt(pu[j][i]/prho[j][i]);}
-				
-				if(INVMAT1==1){
-				c=pu[j][i];}
-				
-				if (cmax_s<c) cmax_s=c;
-				if (cmin_s>c) cmin_s=c;
-			}
+	   frequency within the whole model */
+	for (i=1+nfw;i<=(nx-nfw);i++){
+		for (j=ny1;j<=(ny-nfw);j++){
+		        
+			if(INVMAT1==3){
+			c=sqrt(pu[j][i]/prho[j][i]);}
+			
+			if(INVMAT1==1){
+			c=pu[j][i];}
+			
+			if (cmax_s<c) cmax_s=c;
+			if (cmin_s>c) cmin_s=c;
 		}
-
-
-
-	/* find maximum model phase velocity of P-waves at infinite
-		 frequency within the whole model */
-		for (i=1+nfw;i<=(nx-nfw);i++){
-			for (j=ny1;j<=(ny-nfw);j++){
-			        
-				if(INVMAT1==3){
-				c=sqrt(pu[j][i]/prho[j][i]);}
-				
-				if(INVMAT1==1){
-				c=pu[j][i];}
-				
-				if (cmax_p<c) cmax_p=c;
-				if (cmin_p>c) cmin_p=c;
-			}
-		}
+	}
 
 
 	if (MYID==0){
 		fprintf(fp,"\n\n\n **Message from checkfd (printed by PE %d):\n",MYID);
-		fprintf(fp," Minimum and maximum P-wave and S-wave velocities within subvolumes: \n ");
-		fprintf(fp," MYID\t Vp_min(f=fc) \t Vp_max(f=inf) \t Vs_min(f=fc) \t Vsmax(f=inf) \n");
+		fprintf(fp," Minimum and maximum S-wave velocities within subvolumes: \n ");
+		fprintf(fp," MYID\t Vs_min(f=fc) \t Vsmax(f=inf) \n");
 	}
-	MPI_Barrier(MPI_COMM_WORLD);
-	fprintf(fp," %d \t %e \t %e \t %e \t %e \n", MYID, cmin_p, cmax_p, cmin_s, cmax_s);
 
-	if (cmax_s>cmax_p) cmax=cmax_s; 
-	else cmax=cmax_p;
-	if (cmin_s<cmin_p) cmin=cmin_s; 
-	else cmin=cmin_p;
+	MPI_Barrier(MPI_COMM_WORLD);
+	fprintf(fp," %d \t %e \t %e \n", MYID, cmin_s, cmax_s);
+
+	cmax=cmax_s; 
+	cmin=cmin_s; 
 
 	/* find global maximum for Vp and global minimum for Vs*/
 	MPI_Allreduce(&cmax,&cmax_r,1,MPI_FLOAT,MPI_MAX,MPI_COMM_WORLD);
@@ -87,7 +70,7 @@ void checkfd_ssg_elastic(FILE *fp, float ** prho, float ** pu, float *hc){
 	dhstab = (cmin/(hc[0]*fmax));
 	gamma = fabs(hc[1]) + fabs(hc[2]) + fabs(hc[3]) + fabs(hc[4]) + fabs(hc[5]) + fabs(hc[6]);
 	dtstab = DH/(sqrt(2)*gamma*cmax);
-	/*dtstab=DH/(sqrt(2.0)*cmax);*/
+
 
 	/* find global minimum for NX and NY */
 	MPI_Allreduce(&NX,&nx_min,1,MPI_INT,MPI_MIN,MPI_COMM_WORLD);
