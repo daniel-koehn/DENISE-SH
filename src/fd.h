@@ -89,6 +89,8 @@ MPI_Request *req_send, MPI_Request *req_rec);
 
 void conv_FD(float * temp_TS, float * temp_TS1, float * temp_conv, int ns);
 
+void descent(float ** grad, float ** gradm);
+
 void DFT(int ishot, int nt, float ** vy, float ** syy, float ** sxy, float *** green_vy, float *** greeni_vy, float *** green_syy, float *** greeni_syy, float *** green_sxy, float *** greeni_sxy);
 
 void DFT_grad(int nt, float ** vy, float ** syy, float ** sxy, float ** green_vy, float ** greeni_vy, float ** green_syy, float ** greeni_syy,
@@ -124,6 +126,12 @@ void exchange_par(void);
 
 void exchange_mod_es(float ** matmod, int ncptot, int nparameter);
 
+void extract_LBFGS_SH(int iter, float ** waveconv_u, float ** gradp_u, float ** waveconv_rho, float ** gradp_rho, float ** pu, float ** prho, float * r_LBFGS);
+
+void extract_PCG_SH(float * PCG_old, float ** waveconv_u, float ** waveconv_rho);
+
+void gauss_filt(float ** waveconv);
+
 void grad_FD(float ** grad_vy, float ** gradi_vy, float ** grad_syz, float ** gradi_syz, 
 float ** grad_sxy, float ** gradi_sxy, float ** grad_vyb, float ** gradi_vyb, float ** grad_syzb, 
 float ** gradi_syzb, float ** grad_sxyb, float ** gradi_sxyb, float ** pu, float ** prho,
@@ -145,12 +153,7 @@ void initproc(void);
 
 void interpol(int ni1, int ni2, float **  intvar, int cfgt_check);
 
-void LBFGS(float ** taper_coeff, int nsrc, float ** srcpos, int ** recpos, int ntr_glob, int iter, 
-           int nfstart_jac, float ** waveconv_u, float C_vs, float ** gradp_u, float ** waveconv_rho, float C_rho, 
-           float ** gradp_rho, float * y_LBFGS_vp, float * s_LBFGS_vp, float * rho_LBFGS, float * alpha_LBFGS, float * y_LBFGS_vs, 
-           float * s_LBFGS_vs, float * y_LBFGS_rho, float * s_LBFGS_rho, float ** pu, float ** prho, int nxnyi);
-
-void LBFGS1(float ** taper_coeff,  int nsrc, float ** srcpos, int ** recpos, int ntr_glob, int iter, int nfstart_jac, float ** waveconv_u, float C_vs, float ** gradp_u, float ** waveconv_rho, float C_rho, float ** gradp_rho, float * y_LBFGS, float * s_LBFGS, float * rho_LBFGS, float * alpha_LBFGS, float ** pu, float ** prho, int nxnyi, float * q_LBFGS, float * r_LBFGS, float * beta_LBFGS, int LBFGS_pointer, int NLBFGS, int NLBFGS_vec);
+void LBFGS(int iter, float * y_LBFGS, float * s_LBFGS, float * rho_LBFGS, float * alpha_LBFGS, float * q_LBFGS, float * r_LBFGS, float * beta_LBFGS, int LBFGS_pointer, int NLBFGS, int NLBFGS_vec);
 
 float line_search(FILE *fprec, float ** waveconv_rho, float ** waveconv_u, float ** prho, float ** prhonp1, int iter, int nfstart,
 	int nsrc, float L2, int partest, float ** srcpos_loc, float ** srcpos, float ** srcpos1, float ** signals, int ns,
@@ -225,8 +228,7 @@ void  taper(float **sectionpdiff, int ntr, int ns);
 
 void  output_source_signal(FILE *fp, float **signals, int ns, int seis_form);
 
-void PCG(float ** taper_coeff, int nsrc, float ** srcpos, int ** recpos, int ntr_glob, int iter, int nfstart_jac, 
-float ** waveconv_u, float C_vs, float ** gradp_u, float ** waveconv_rho, float C_rho, float ** gradp_rho);
+void PCG(float * PCG_new, float * PCG_old, float * PCG_dir, int PCG_class);
 
 void PML_pro(float * d_x, float * K_x, float * alpha_prime_x, float * a_x, float * b_x, 
 float * d_x_half, float * K_x_half, float * alpha_prime_x_half, float * a_x_half, float * b_x_half,
@@ -302,6 +304,10 @@ float **splitsrc_back(int **recpos,int *nsrc_loc, int nsrc);
 void stalta(float **sectionp, int ntr, int nst, float *picked_times, int ishot);
 
 void stf(float **sectionvy_obs, float **sectionvy, int ntr_glob, int ishot, int ns, int iter, int nshots, float **signals, int **recpos, float **srcpos);
+
+void store_LBFGS_SH(float ** taper_coeff, int nsrc, float ** srcpos, int ** recpos, int ntr_glob, int iter, float ** waveconv_u, float ** gradp_u, float ** waveconv_rho, float ** gradp_rho, float * y_LBFGS, float * s_LBFGS, float * q_LBFGS, float ** pu, float ** prho, int nxnyi, int LBFGS_pointer, int NLBFGS, int NLBFGS_vec);
+
+void store_PCG_SH(float * PCG_old, float ** waveconv_u, float ** waveconv_rho);
 
 void time_window_stf(float **sectiondata, int iter, int ntr_glob, int ns, int ishot);
 
@@ -452,10 +458,12 @@ void zero_hessian(int ny1, int ny2, int nx1, int nx2, int nshots, float *** gree
 
 void zero_LBFGS(int NLBFGS, int NLBFGS_vec, float * y_LBFGS, float * s_LBFGS, float * q_LBFGS, float * r_LBFGS, 
                  float * alpha_LBFGS, float * beta_LBFGS, float * rho_LBFGS);
+
+void zero_PCG(float * PCG_old, float * PCG_new, float * PCG_dir, int PCG_vec);
 		 
 void FLnode(float  **  rho, float **  u, float **  taus, float *  eta);
 
-void smooth_grad(float ** waveconv, int sws);
+void smooth_grad(float ** waveconv);
 
 /* declaration of functions for parser*/
 

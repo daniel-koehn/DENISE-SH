@@ -64,7 +64,7 @@ int ntr=0, ntr_loc=0, ntr_glob=0, nsrc=0, nsrc_loc=0, nsrc_glob=0, ishot, irec, 
 float pum, thetaf, thetab, e33, e33b, e11, e11b, muss, lamss; 
 float memdyn, memmodel, memseismograms, membuffer, memtotal, dngn, fphi, sum, avggrad, beta, betan, betaz, betaLog, betaVp, betaVs, betarho, eps_scale, L2old;
 float fac1, fac2, wavefor, waverecipro, dump, dump1, epsilon, gradsign, mun, eps1, gradplastiter, gradglastiter, gradclastiter, betar, sig_max, sig_max1;
-float signL1, RMS, opteps_vp, opteps_vs, opteps_rho, Vs, Vp, Vp_avg, C_vp, Vs_avg, C_vs, Cd, rho_avg, C_rho, Vs_sum, Vp_sum, rho_sum, Zp, Zs;
+float signL1, RMS, opteps_vp, opteps_vs, opteps_rho, Vs, Vp, Vp_avg, Vs_avg, Cd, rho_avg, Vs_sum, Vp_sum, rho_sum, Zp, Zs;
 float freqshift, dfreqshift, memfwt, memfwt1, memfwtdata;
 char *buff_addr, ext[10], *fileinp;
 char wave_forward[225], wave_recipro[225], wave_conv[225], jac[225], jac2[225], jacsum[225], dwavelet[225], vyf[STRING_SIZE];
@@ -142,6 +142,10 @@ float FC;
 
 /* parameter for model misfit */
 float M2, M2_vs, M2_rho;
+
+/* Variables for PCG */
+float * PCG_old, * PCG_new, * PCG_dir;
+int PCG_class, PCG_vec;
 
 FILE *fprec, *FP2, *FP3, *FP4, *FP5, *FPL2, *FP6, *FP7, *FP_stage;
 	
@@ -420,8 +424,19 @@ if(HESSIAN){
   INVMAT=10;
 }
 
-/* Variables for the L-BFGS method */
+/* Variables for PCG method */
+if(GRAD_METHOD==1){
 
+  PCG_class = 2;                 /* number of parameter classes */ 
+  PCG_vec = PCG_class*NX*NY;  	 /* length of one PCG-parameter class */
+  
+  PCG_old  =  vector(1,PCG_vec);
+  PCG_new  =  vector(1,PCG_vec);
+  PCG_dir  =  vector(1,PCG_vec);
+ 
+}
+
+/* Variables for the L-BFGS method */
 if(GRAD_METHOD==2){
 
   NLBFGS = 20;
@@ -1776,12 +1791,74 @@ interpol(IDXI,IDYI,waveconv_rho,1);
 
 }
 
+    /* apply smoothness constraints to gradients */
+    smooth_grad(waveconv_u);
+    smooth_grad(waveconv_rho);
+
+    /* Preconditioning of gradients after shot summation and smoothing */
+    /*================== TAPER Vs/Zs/mu ===========================*/
+    if (SWS_TAPER_GRAD_VERT){    /* vertical gradient taper is applied */
+        taper_grad(waveconv_u,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,1);}
+
+    if (SWS_TAPER_GRAD_HOR){    /* horizontal gradient taper is applied */
+        taper_grad(waveconv_u,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,2);}
+
+    if(SWS_TAPER_GRAD_SOURCES){    /* cylindrical taper around sources is applied */
+        taper_grad(waveconv_u,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,3);}
+
+    if(SWS_TAPER_FILE){ /* read taper from file */
+        taper_grad(waveconv_u,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,5);}
+
+
+    /*================== TAPER Rho ===========================*/
+    if (SWS_TAPER_GRAD_VERT){    /* vertical gradient taper is applied */
+        taper_grad(waveconv_rho,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,1);}
+
+    if (SWS_TAPER_GRAD_HOR){     /* horizontal gradient taper is applied */
+        taper_grad(waveconv_rho,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,2);}
+
+    if (SWS_TAPER_GRAD_SOURCES){    /* cylindrical taper around sources is applied */
+        taper_grad(waveconv_rho,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,3);}
+
+    if (SWS_TAPER_FILE){ /* read taper from file */
+        taper_grad(waveconv_rho,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,6);}
+
 if((HESSIAN==0)&&(GRAD_METHOD==1)&&(INVMAT!=10)){
-	PCG(taper_coeff, nsrc, srcpos, recpos, ntr_glob, iter, nfstart_jac, waveconv_u, C_vs, gradp_u, waveconv_rho, C_rho, gradp_rho);
+
+    /* calculate steepest descent direction */
+    descent(waveconv_u,gradp_u);
+    descent(waveconv_rho,gradp_rho);
+
+    /* store current gradients in PCG_new vector */
+    store_PCG_SH(PCG_new,gradp_u,gradp_rho);
+
+    /* apply PCG method */
+    PCG(PCG_new,PCG_old,PCG_dir,PCG_class);
+
+    /* extract CG-search directions */
+    extract_PCG_SH(PCG_dir,waveconv_u,waveconv_rho);
+
+    /* store old gradients in PCG_old vector */
+    store_PCG_SH(PCG_old,gradp_u,gradp_rho);
+
+    /* steepest descent direction -> gradient direction */
+    descent(waveconv_u,waveconv_u);
+    descent(waveconv_rho,waveconv_rho);
+
 }
 
 if((HESSIAN==0)&&(GRAD_METHOD==2)&&(INVMAT!=10)){
-    LBFGS1(taper_coeff, nsrc, srcpos, recpos, ntr_glob, iter, nfstart_jac, waveconv_u, C_vs, gradp_u, waveconv_rho, C_rho, gradp_rho, y_LBFGS, s_LBFGS, rho_LBFGS, alpha_LBFGS, pu, prho, nxnyi, q_LBFGS, r_LBFGS, beta_LBFGS, LBFGS_pointer, NLBFGS, NLBFGS_vec);
+
+    /* store models and gradients in l-BFGS vectors */
+    store_LBFGS_SH(taper_coeff, nsrc, srcpos, recpos, ntr_glob, iter, waveconv_u, gradp_u, waveconv_rho, 
+		   gradp_rho, y_LBFGS, s_LBFGS, q_LBFGS, pu, prho, nxnyi, LBFGS_pointer, NLBFGS, NLBFGS_vec);
+
+    /* apply l-BFGS optimization */
+    LBFGS(iter, y_LBFGS, s_LBFGS, rho_LBFGS, alpha_LBFGS, q_LBFGS, r_LBFGS, beta_LBFGS, LBFGS_pointer, NLBFGS, NLBFGS_vec);
+
+    /* extract gradients and save old models/gradients for next l-BFGS iteration */
+    extract_LBFGS_SH(iter, waveconv_u, gradp_u, waveconv_rho, gradp_rho, pu, prho, r_LBFGS);
+
 }
 
 opteps_vp=0.0;
@@ -1877,14 +1954,6 @@ float diff=0.0, pro=PRO;
 
 /* calculating differnce of the actual L2 and before two iterations, dividing with L2_hist[iter-2] provide changing in percent*/
 diff=fabs((L2_hist[iter-2]-L2_hist[iter])/L2_hist[iter-2]);
-
-	/* abort criterion: if diff is smaller than pro (1% ?? is this reasonable?) than the inversion abort or switch to another frequency range*/
-	if((diff<=pro)&&(TIME_FILT==0)){
-		if(MYID==0){
-		printf("\n Reached the abort criterion of pro=%e and diff=%e \n",pro,diff);
-		}
-	break;
-	}
 	
 	if((diff<=pro)||(step3==1)){
 
@@ -1894,7 +1963,11 @@ diff=fabs((L2_hist[iter-2]-L2_hist[iter])/L2_hist[iter-2]);
         	min_iter_help=0;
         	min_iter_help=iter+MIN_ITER;
         	iter=0;
-	
+
+        	if(GRAD_METHOD==1){
+	  		zero_PCG(PCG_old, PCG_new, PCG_dir, PCG_vec);
+		}	
+
         	if(GRAD_METHOD==2){
         		zero_LBFGS(NLBFGS, NLBFGS_vec, y_LBFGS, s_LBFGS, q_LBFGS, r_LBFGS, alpha_LBFGS, beta_LBFGS, rho_LBFGS);
         		LBFGS_pointer = 1;  

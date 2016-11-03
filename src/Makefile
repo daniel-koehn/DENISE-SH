@@ -252,14 +252,18 @@ DENISE= \
 	holbergcoeff.c \
 	householder.c \
 	comm_ini.c \
+	descent.c \
 	DFT.c \
 	DFT_grad.c \
 	dotp.c \
 	exchange_v.c \
 	exchange_s.c \
 	exchange_L2.c \
+	extract_LBFGS_SH.c \
+	extract_PCG_SH.c \
 	eprecond.c \
 	eprecond1.c \
+	gauss_filt.c \
 	grad_FD.c \
 	snap_ssg.c \
 	seismo_ssg.c \
@@ -283,7 +287,7 @@ DENISE= \
 	initproc.c \
 	interpol.c \
 	json_parser.c \
-	LBFGS1.c \
+	LBFGS.c \
 	line_search.c \
 	LU_decomp.c \
 	smooth_model.c \
@@ -328,6 +332,8 @@ DENISE= \
 	splitsrc_back.c \
 	splitrec.c \
 	stalta.c \
+	store_LBFGS_SH.c \
+	store_PCG_SH.c \
 	taper.c \
 	taper_grad.c \
 	taper_grad_shot.c \
@@ -346,7 +352,8 @@ DENISE= \
 	zero_fdveps_visc.c \
 	zero_hessian.c \
 	zero_FWI.c \
-	zero_LBFGS.c
+	zero_LBFGS.c \
+	zero_PCG.c
 
 DENISE_ES_SRC_SSG= \
 	denise_es.c \
