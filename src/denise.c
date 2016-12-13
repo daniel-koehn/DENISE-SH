@@ -1286,7 +1286,8 @@ if(nt==hin1){
 	
 	    /* no data integration */
 	    if(GRAD_FORM==2){
-	       forward_prop_u[imat2]=uyx[j][i];
+	       if(RTM==0){forward_prop_u[imat2]=uyx[j][i];}
+	       if(RTM==1){forward_prop_u[imat2]=pvy[j][i];}
 	    }
 	    
 	    /* data integration */
@@ -1578,26 +1579,33 @@ for (nt=1;nt<=NT;nt++){
                                              
 		   waveconv_rho_shot[j][i]+=(pvyp1[j][i]*forward_prop_rho_y[imat]);
 		   
-		   if(GRAD_FORM==1){  /* data integration */
+                   if(RTM==0){
+
+		       if(GRAD_FORM==1){  /* data integration */
 		   
-		      if(INVMAT1==1){
-		        muss = prho[j][i] * pu[j][i] * pu[j][i];
-	              }
+		           if(INVMAT1==1){
+		               muss = prho[j][i] * pu[j][i] * pu[j][i];
+	                   }
 	           
-		      if(INVMAT1==3){
-		        muss = pu[j][i];
-		      } 
+		           if(INVMAT1==3){
+		               muss = pu[j][i];
+		           } 
 	                        
-		      if(pu[j][i]>0.0){
-		        waveconv_u_shot[j][i]+= (1.0/(muss*muss))*(forward_prop_u[imat] * psxy[j][i] + forward_prop_y[imat] * psyz[j][i]);
-		      }
-                   }
+		           if(pu[j][i]>0.0){
+		               waveconv_u_shot[j][i]+= (1.0/(muss*muss))*(forward_prop_u[imat] * psxy[j][i] + forward_prop_y[imat] * psyz[j][i]);
+		           }
+                       }
 		   
-		   if(GRAD_FORM==2){ /* no data integration */
-                      waveconv_u_shot[j][i]+= (forward_prop_u[imat] * psxy[j][i]) + (forward_prop_y[imat] * psyz[j][i]);
-                   }
+		       if(GRAD_FORM==2){ /* no data integration */
+                           waveconv_u_shot[j][i]+= (forward_prop_u[imat] * psxy[j][i]) + (forward_prop_y[imat] * psyz[j][i]);
+                       }
+
+		   } /* end RTM==0 */
+
+		   if(RTM==1){waveconv_u_shot[j][i] += forward_prop_u[imat] * pvy[j][i];}
 		      		                                                                                                             
 		   imat++;
+
 		   }
 	    }
 		
@@ -1608,11 +1616,12 @@ for (nt=1;nt<=NT;nt++){
 	  }
 
     /* save frequency domain backward wavefield */
-    if(INVMAT==1){
+    /*if(INVMAT==1){
       DFT_grad(nt,pvy,psyz,psxy,grad_vyb,gradi_vyb,grad_syzb,gradi_syzb,grad_sxyb,gradi_sxyb,1);
-    }
+    }*/
                                                                                                                                
     hin++;
+
     }
      
    /* WRITE SNAPSHOTS TO DISK */
@@ -1720,6 +1729,8 @@ M2_rho=calc_mres(1,NX,1,NY,prho,Rho0);
 L2sum = 0.0;
 MPI_Allreduce(&M2_rho,&L2sum,1,MPI_FLOAT,MPI_SUM,MPI_COMM_WORLD);
 M2_rho = L2sum/(NXG*NYG);
+
+if(RTM==0){
           
 if((HESSIAN!=1)&&(INVMAT!=10)){
 /* calculate gradient direction u */
@@ -1791,6 +1802,8 @@ interpol(IDXI,IDYI,waveconv_rho,1);
 
 }
 
+} /* end of RTM == 0 */
+
     /* apply smoothness constraints to gradients */
     smooth_grad(waveconv_u);
     smooth_grad(waveconv_rho);
@@ -1823,7 +1836,18 @@ interpol(IDXI,IDYI,waveconv_rho,1);
     if (SWS_TAPER_FILE){ /* read taper from file */
         taper_grad(waveconv_rho,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,6);}
 
-if((HESSIAN==0)&&(GRAD_METHOD==1)&&(INVMAT!=10)){
+if(RTM==1){
+ 
+    /* write RTM image / gradient direction */
+    if(RTM==1){sprintf(jac,"%s_S_image.bin",JACOBIAN);}
+    if(RTM==0){sprintf(jac,"%s_grad_vs.bin",JACOBIAN);}
+    writemod(jac,waveconv_u,3);
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (MYID==0) mergemod(jac,3);
+
+}
+
+if((RTM==0)&&(GRAD_METHOD==1)&&(INVMAT!=10)){
 
     /* calculate steepest descent direction */
     descent(waveconv_u,gradp_u);
@@ -1847,7 +1871,7 @@ if((HESSIAN==0)&&(GRAD_METHOD==1)&&(INVMAT!=10)){
 
 }
 
-if((HESSIAN==0)&&(GRAD_METHOD==2)&&(INVMAT!=10)){
+if((RTM==0)&&(GRAD_METHOD==2)&&(INVMAT!=10)){
 
     /* store models and gradients in l-BFGS vectors */
     store_LBFGS_SH(taper_coeff, nsrc, srcpos, recpos, ntr_glob, iter, waveconv_u, gradp_u, waveconv_rho, 
