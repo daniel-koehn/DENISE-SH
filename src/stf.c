@@ -56,13 +56,6 @@ void stf(float **sectionvy_obs, float **sectionvy, int ntr_glob, int ishot, int 
         STF_vector = vector(1,ns);
 
         /*printf("Npad=%d \n",Npad);   */
-        
-        /* pick first arrivals in the synthetic data with STA/LTA-picker and apply time window to field data before stf inversion */ 	                                           
-        if(INV_STF==2){
-	  picked_times = vector(1,ntr_glob);
-	  stalta(sectionvy, ntr_glob, ns, picked_times, ishot);
-          time_window_stf(sectionvy_obs, iter, ntr_glob, ns, ishot);
-        }
                                
 	/* TRKILL==1 - trace killing is applied */
 	if(TRKILL){
@@ -120,7 +113,7 @@ void stf(float **sectionvy_obs, float **sectionvy, int ntr_glob, int ishot, int 
              /* calculate absolute offset */
              offset = sqrt(((xs-xr)*(xs-xr))+((ys-yr)*(ys-yr)));
 
-             printf("offset = %f \n",offset);
+             /* printf("offset = %f \n",offset); */
 
              /* mute far-offset data*/
              if((OFFSET_MUTE==1)&&(offset>=OFFSETC)){

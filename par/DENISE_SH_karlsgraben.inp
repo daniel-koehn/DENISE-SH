@@ -2,15 +2,15 @@
 #      PARAMETER FILE FOR DENISE_SH
 #-----------------------------------------------------------------
 # description:
-# description/name of the model: Soil Compaction (SH) Hohenschulen
+# description/name of the model: Karlsgraben (SH-data)
 #
 #-------------- Domain Decomposition -----------------------------
-number_of_processors_in_x-direction_(NPROCX) = 2
-number_of_processors_in_y-direction_(NPROCY) = 3
+number_of_processors_in_x-direction_(NPROCX) = 8
+number_of_processors_in_y-direction_(NPROCY) = 4
 #
 #-------------------- FD order -----------------------------------
 # Order of ssg FD coefficients (values: 2, 4, ..., 12)
-FD_ORDER = 8
+FD_ORDER = 4
 # Maximum relative group velocity error E
 # (minimum number of grid points per shortest wavelength is defined by FD_ORDER and E)
 # values: 0 = Taylor coefficients
@@ -20,19 +20,19 @@ FD_ORDER = 8
 #         4 =                 E = 3.0 %
 max_relative_error = 1
 #-------------------- 2-D Grid -----------------------------------
-number_of_gridpoints_in_x-direction_(NX) = 1328
-number_of_gridpoints_in_y-direction_(NY) = 552
-distance_between_gridpoints(in_m)_(DH) = 0.1
+number_of_gridpoints_in_x-direction_(NX) = 744
+number_of_gridpoints_in_y-direction_(NY) = 120
+distance_between_gridpoints(in_m)_(DH) = 0.05
 #
 # Note that y denotes the vertical direction !
 #
 #-------------------Time Stepping -------------------------------
-time_of_wave_propagation_(in_sec)_(TIME) = 0.5
-timestep_(in_seconds)_(DT) =2.5e-5
+time_of_wave_propagation_(in_sec)_(TIME) = 1.0
+timestep_(in_seconds)_(DT) = 2.48e-5
 #
 #--------------------Source---------------------------------------
 # Shape_of_source-signal:
-(ricker=1;fumue=2;from_SOURCE_FILE=3;SIN**3=4;Gaussian_deriv=5;Spike=6)_(QUELLART) = 1
+(ricker=1;fumue=2;from_SOURCE_FILE=3;SIN**3=4;Gaussian_deriv=5;Spike=6)_(QUELLART) = 6
 point_source_(force_in_y=3)_(QUELLTYP) = 3
 angle_of_rotated_directed_source_relative_to_y_direction_(in_degree)_(ANGLE) = 0.0
 depth_of_plane_wave_excitation_(no<=0)_(in_meter)_(PLANE_WAVE_DEPTH) = 0.0
@@ -40,27 +40,27 @@ dip_of_plane_wave_from_vertical_(in_degrees)_(PHI) = 0.0
 SIGNAL_FILE = ./wavelet/wavelet_profile2 
 duration_of_source-signal_(in_seconds)_(TS) = 0.032
 read_source_positions_from_SOURCE_FILE_(yes=1)_(SRCREC) = 1
-SOURCE_FILE = ./source/sr0_src_corr.dat 
+SOURCE_FILE = ./source/source_SH.dat 
 run_multiple_shots_defined_in_SOURCE_FILE_(yes=1)_(RUN_MULTIPLE_SHOTS) = 1
 #
 #
 #--------------------- Model -------------------------------------
-read_model_parameters_from_MFILE(yes=1)(READMOD) = 1
-MFILE = start/sr0_corr
+read_model_parameters_from_MFILE(yes=1)(READMOD) = 0
+MFILE = start/Karlsgraben_RAJZEL_1D
 #
 #---------------------Q-approximation-----------------------------
-Number_of_relaxation_mechanisms_(L) = 0
-L_Relaxation_frequencies_(FL) = 17.2007  137.6888  516.9171
+Number_of_relaxation_mechanisms_(L) = 4
+L_Relaxation_frequencies_(FL) = 2.47 11.82 63.93 172.81 
 Tau_(TAU) = 0.4311
 #
 #----------------------Free Surface-------------------------------
-free_surface_(yes=1)(FREE_SURF) = 0
+free_surface_(yes=1)(FREE_SURF) = 1
 #
 #--------------------PML Boundary---------------------------
 # quadratic damping applied
 width_of_absorbing_frame_(in_gridpoints)_(No<=0)_(FW) = 10
 Damping_velocity_in_CPML_(in_m/s)_(DAMPING) = 250.0
-Frequency_within_the_PML_(Hz)_(FPML) = 50
+Frequency_within_the_PML_(Hz)_(FPML) = 40
 # apply_periodic_boundary_condition_at_edges_(BOUNDARY):
 (no=0)_(left_and_right=1) = 0
 #
@@ -80,7 +80,7 @@ output_of_seismograms_(SEISMO) = 1
 # SEISMO=0: no seismograms
 # SEISMO=1: particle-velocity vy
 read_receiver_positions_from_file_(yes=1)_(READREC) = 1
-REC_FILE = ./receiver/sr0_rec_corr.dat 
+REC_FILE = ./receiver/receiver_SH.dat 
 reference_point_for_receiver_coordinate_system_(REFREC) = 0.0 , 0.0
 # if READREC=1 the following three lines are ignored 
 position_of_first_receiver_(in_m)_(XREC1,YREC1) =  6.0 , 0.2
@@ -101,8 +101,8 @@ samplingrate_(in_timesteps!)_(NDT) = 1
 data-format_(SU(1);ASCII(2);BINARY(3)) = 1
 # output files for seismograms
 # particle velocities (if SEISMO=1 or SEISMO=4)
-filename_for_Vx_(SEIS_FILE_VX) = su/DENISE_sr0_x.su
-filename_for_Vy_(SEIS_FILE_VY) = su/DENISE_sr0_y.su
+filename_for_Vx_(SEIS_FILE_VX) = su/DENISE_karlsgraben_x.su
+filename_for_Vy_(SEIS_FILE_VY) = su/DENISE_karlsgraben_y.su
 # curl and div of wavefield (if SEISMO=3 or SEISMO=4)
 filename_for_curl_(SEIS_FILE_CURL) = su/2layer_rot.su
 filename_for_div_(SEIS_FILE_DIV) = su/2layer_div.su
@@ -122,17 +122,17 @@ checkpoint_file_(CHECKPTFILE) = tmp/checkpoint_fdveps
 # DENISE_elastic specific parameters
 number_of_TDFWI_iterations_(ITERMAX) =  600
 output_of_jacobian_(JACOBIAN) = jacobian/jacobian
-seismograms_of_measured_data_(DATA_DIR) = su/soil/sr0_raw
+seismograms_of_measured_data_(DATA_DIR) = su/karlsgraben/Karlsgraben_FWI
 cosine_taper_(yes=1/no=0)_(TAPER) = 0
 taper_length_(in_rec_numbers)_(TAPERLENGTH) = 5
 Inverse_Type_(gradient=1/complete=2)_(INVTYPE) = 2
 gradient_taper_geometry_(GRADT1,GRADT2,GRADT3,GRADT4) = 21, 26, 490, 500
 type_of_material_parameters_to_invert_(Vs,rho=1/Zs,rho=2/mu,rho=3)_(INVMAT1) = 1
-forward_modelling_only_(yes=10)_FWT_(yes=0)_(INVMAT) = 10
+forward_modelling_only_(yes=10)_FWT_(yes=0)_(INVMAT) = 0
 point_source_backpropagation_(y_comp=2)_(QUELLTYPB) = 2
 #
 #
-testshots_for_step_length_estimation_(TESTSHOT_START,TESTSHOT_END,TESTSHOT_INCR) = 1,8,1
+testshots_for_step_length_estimation_(TESTSHOT_START,TESTSHOT_END,TESTSHOT_INCR) = 1, 47, 2
 #
 #
 # ----- Definition of gradient taper geometry ----- #
@@ -151,7 +151,7 @@ read_taper_from_file_(yes=1)_(SWS_TAPER_FILE) = 0
 #
 #
 # ----- Definition of smoothing (wavenumber domain damping) of the gradients ----- #
-apply_spatial_filtering_(1=yes)_(SPATFILTER) = 1
+apply_spatial_filtering_(1=yes)_(SPATFILTER) = 0
 damping_coefficient_in_the_WD_(WD_DAMP) = 1e-3
 half_filter_length_in_gridpoints_(SPAT_FILT_SIZE) = 30
 depth_from_which_smoothing_is_applied_(in_gridpoints)_(SPAT_FILT_1) = 1
@@ -176,8 +176,8 @@ increment_between_saved_gradients_(nf_jac) = 2000
 # ----- Upper and lower limits for model parameters ----- #
 upper_limit_for_vp/lambda_(VPUPPERLIM) = 2000
 lower_limit_for_vp/lambda_(VPLOWERLIM) = 300
-upper_limit_for_vs/mu_(VSUPPERLIM) = 800.0
-lower_limit_for_vs/mu_(VSLOWERLIM) = 150.0
+upper_limit_for_vs/mu_(VSUPPERLIM) = 795.0
+lower_limit_for_vs/mu_(VSLOWERLIM) = 40.0
 upper_limit_for_rho_(RHOUPPERLIM) = 3000
 lower_limit_for_rho_(RHOLOWERLIM) = 1000.0
 #
@@ -225,7 +225,7 @@ norm_for_misfit_calculation_(LNORM) = 2
 # LNORM==4 SECH
 # LNORM==5 Global correlation
 # LNORM==6 Integration before Time windowing; Only if TIMEWIN=1
-use_only_every_DTINV_time_sample_for_gradient_calculation_(DTINV) = 1
+use_only_every_DTINV_time_sample_for_gradient_calculation_(DTINV) = 61
 #
 #
 #----- Step length estimation ------# 

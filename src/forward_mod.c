@@ -18,7 +18,7 @@ void forward_mod(FILE *fprec, float ** waveconv, float ** waveconv_rho, float **
 	float ** sectionvydiffold, int LNORM, int TIMEWIN, float * epst1, float * L2t, float L2sum, float energy_sum, float ** bufferlef_to_rig, float ** bufferrig_to_lef, 
 	float ** buffertop_to_bot, float ** bufferbot_to_top, float **pu, float **punp1, int itest, int nsrc_loc,MPI_Request * req_send, MPI_Request * req_rec){
 
-	extern int NX, NY, POS[3], NPROCX, NPROCY, BOUNDARY, FDORDER, INVMAT, MYID, QUELLART, QUELLTYP, SEISMO, QUELLTYPB;
+	extern int NX, NY, POS[3], NPROCX, NPROCY, BOUNDARY, FDORDER, INVMAT, MYID, QUELLART, QUELLTYP, SEISMO, QUELLTYPB, TIMEWIN;
 	extern int RUN_MULTIPLE_SHOTS, TESTSHOT_START, TESTSHOT_END, TESTSHOT_INCR, NT, NDT, FREE_SURF, TRKILL, REC1, REC2;
 	
 	extern float TSNAP1, DT;
@@ -138,47 +138,16 @@ printf("------------------------------------------------------------------------
 
 if (ntr > 0){
 
-/* read seismic data from SU file vx */
-/* --------------------------------- */
-
-if((QUELLTYPB==1)||(QUELLTYPB==3)){ /* if QUELLTYPB */
-
-inseis(fprec,ishot,sectionread,ntr_glob,ns,1);
-
-if(TRKILL==1){
-     sectionread[3][1]=20000;
-     sectionread[20][1]=20000;
-}
-          
-/* assign input data to each PE */
-h=1;
-for(i=1;i<=ntr;i++){
-   for(j=1;j<=ns;j++){
-           sectionvxdata[h][j]=sectionread[recpos_loc[3][i]][j];
-   }
-   h++;
-}
-
-L2=calc_res(sectionvxdata,sectionvx,sectionvxdiff,sectionvxdiffold,ntr,ns,LNORM,L2,0,1,1,TIMEWIN,iter,ishot);
-} /* end QUELLTYPB*/
-
 /* read seismic data from SU file vy */
 /* --------------------------------- */
 
 if((QUELLTYPB==1)||(QUELLTYPB==2)){ /* if QUELLTYPB */
 inseis(fprec,ishot,sectionread,ntr_glob,ns,2);
-
-if(TRKILL==1){
-     sectionread[1][1]=20000;
-     sectionread[2][1]=20000;
-     sectionread[3][1]=20000;
-     sectionread[19][1]=20000;
-     sectionread[20][1]=20000;
-     sectionread[21][1]=20000;
-     sectionread[22][1]=20000;
-     sectionread[23][1]=20000;
-}
           
+if(TIMEWIN){
+    time_window(sectionread, iter, ntr_glob, ns, ishot);
+}	  
+	  
 /* assign input data to each PE */
 h=1;
 for(i=1;i<=ntr;i++){

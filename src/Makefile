@@ -5,7 +5,6 @@
 
 # source code for model generation
 
-#MODEL = hh.c
 MODEL = model_grad_visc.c
 MODEL_EL = check_start.c
 EXEC= ../bin
@@ -21,18 +20,18 @@ EXEC= ../bin
 # CC=cc
 
 # On NEC-cluster
-#CC=mpiicc
-#LFLAGS=-lm -lcseife -lfftw3 -ftz -lstdc++
-#CFLAGS=-O3 -xAVX -ipo -fno-fnalias -restrict
-#SFLAGS=-L./../libcseife -L$//sfs/fs4/work-sh2/sungw331/fftw-3.3.4/lib
-#IFLAGS=-I./../libcseife -I$//sfs/fs4/work-sh2/sungw331/fftw-3.3.4/include
+CC=mpiicc
+LFLAGS=-lm -lcseife -lfftw3 -ftz -lstdc++
+CFLAGS=-O3 -xAVX -ipo -fno-fnalias -restrict
+SFLAGS=-L./../libcseife -L$//sfs/fs4/work-sh2/sungw331/fftw-3.3.4/lib
+IFLAGS=-I./../libcseife -I$//sfs/fs4/work-sh2/sungw331/fftw-3.3.4/include
 
 # On Desktop computer with LinuxMint 17, OpenMPI and gcc 4.8.2
-CC=mpicc
-LFLAGS=-lm -lcseife -lfftw3 -lstdc++
-CFLAGS=-O3 -fno-stack-protector
-SFLAGS=-L./../libcseife
-IFLAGS=-I./../libcseife
+#CC=mpicc
+#LFLAGS=-lm -lcseife -lfftw3 -lstdc++
+#CFLAGS=-O3 -fno-stack-protector
+#SFLAGS=-L./../libcseife
+#IFLAGS=-I./../libcseife
 
 # ALTIX
 #CC=icc

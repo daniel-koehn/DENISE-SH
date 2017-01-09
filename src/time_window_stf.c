@@ -34,7 +34,7 @@ err(" picks_?.dat could not be opened !");
 }
 
   for(i=1;i<=ntr_glob;i++){
-    fscanf(fptime,"%f%f",&dump, &dump1);
+    fscanf(fptime,"%f",&dump);
     picked_times1[i] = dump + TWLENGTH_PLUS;
   }
 
@@ -48,15 +48,10 @@ for(i=1;i<=ntr_glob;i++){
          
          dump1  = time-picked_times1[i]; 
          taper1 = exp(-GAMMA*dump1*dump1);
-         taper  = exp(-TWLENGTH_MINUS*dump1*dump1);
 	 
          if(time>=picked_times1[i]){
            sectiondata[i][j] = sectiondata[i][j] * taper1;
-         }
-
-         /*if(time<picked_times1[i]){
-           sectiondata[i][j] = sectiondata[i][j] * taper;
-         }*/                                    
+         }                                    
            
       }     
 }

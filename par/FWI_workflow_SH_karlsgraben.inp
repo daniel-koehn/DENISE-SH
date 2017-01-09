@@ -1,0 +1,5 @@
+PRO	TIME_FILT	FC_low	FC_high	ORDER	TIME_WIN	GAMMA	GAMMA-	TWIN+	INV_VP_ITER	INV_VS_ITER	INV_RHO_ITER	SPATFILTER	WD_DAMP		EPRECOND	LNORM	STF_INV	OFFSETC_STF	EPS_STF	NORMALIZE	OFFSET_MUTE	OFFSETC		SCALERHO
+0.01    1               0.0	15.00   6       1               1e5     0.0     0.05    0               0               600             3               0.25            3               5       1       40.0		5e-2    0		0		7.5		1.0
+0.01    1               0.0	20.00   6       1               1e5     0.0     0.05    0               0               600             3               0.25            3               5       1       40.0		5e-2    0		0		7.5		1.0
+0.01    1               0.0	40.00   6       1               1e5     0.0     0.05    0               0               600             3               0.25            3               5       1       40.0		5e-2    0		0		7.5		1.0
+0.01    1               0.0	80.00   6       1               1e5     0.0     0.05    0               0               600             3               0.25            3               5       1       40.0		5e-2    0		0		7.5		1.0

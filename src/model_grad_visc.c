@@ -1,6 +1,10 @@
 /*
- *   Model homogeneous half space
- *   last update 11.04.02, T. Bohlen
+ *   1D gradient model from RAJZEL
+ * 
+ *
+ *   Daniel Koehn
+ *   Kiel, 04.01.2017
+ *
  */
 
 #include "fd.h"
@@ -15,15 +19,12 @@ void model(float  **  rho, float **  u, float **  taus, float *  eta){
 	extern char INV_MODELFILE[STRING_SIZE];
 	extern float DH, *FL, TAU, DT;
 		/* local variables */
-	float vs, rhov, grad1, grad2, grad3, y, ts, tp, muv, piv, *pts;
+	float vs, rhov, ts, tp, muv, piv, *pts;
 	int i, j, ii, jj, l;
 	char modfile[STRING_SIZE]; 
 	
-	/* parameters for layer 1 velocity in m/s, depth h in meter */
-	const float vs1=280.0, rho1=1800.0, h=10.0;
-	
-	/* parameters for layer 2 due to calculation of grad1, grad2 and grad3*/
-	const float vs2=800.0, rho2=2000.0;
+	/* parameters for gradient model */
+	const float vs0=170.0, rho0=1900.0, Qs0=10.0, grad0=2.80;
 	
 	/*-----------------------------------------------------------------------*/
 	pts=vector(1,L);
@@ -33,27 +34,14 @@ void model(float  **  rho, float **  u, float **  taus, float *  eta){
 	}
 	
 	
-	y=h/DH;
-	if(y==NYG) err(" \n y is equal NYG !! see src/model_grad.c  \n ");
-	grad2=(vs2-vs1)/y;
-	grad3=(rho2-rho1)/y;	
-	
-	
 	/* loop over global grid */
 		for (i=1;i<=NXG;i++){
 			for (j=1;j<=NYG;j++){
 			
-				if(j<=y){
-				vs=vs1+(j*grad2);
-				rhov=rho1+(j*grad3);
-				}
-				
-				else{				
-				vs=vs2;
-				rhov=rho2;
-				}
-				
-				ts=TAU;
+			    /* 1D linear gradient model */
+                            vs = grad0 * ((j-1)*DH) + vs0;
+			    ts = 2.0 / Qs0;
+                            rhov = rho0;   
 				
 				/* only the PE which belongs to the current global gridpoint 
 				  is saving model parameters in his local arrays */

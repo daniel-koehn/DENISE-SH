@@ -1,20 +1,20 @@
-#!/bin/ksh
+#!/bin/bash
 #PBS -l elapstim_req=48:00:00  # Walltime
 #PBS -l cputim_job=768:00:00   # akkumulierte CPU-Zeit pro Knoten
 #PBS -l memsz_job=50gb         # Hauptspeicherbedarf
-#PBS -b 1                      # Anzahl der Knoten
+#PBS -b 2                      # Anzahl der Knoten
 #PBS -T intmpi                 # gibt Jobtyp an; intmpi fuer Intel-MPI 
 #PBS -l cpunum_job=16          # Anzahl benoetigter CPUs pro Knoten 
 #PBS -N DENISE_SH              # Name des Batch-Jobs
 #PBS -o DENISE.out             # Datei fuer die Standardausgabe
 #PBS -j o                      # Standard- und Fehlerausgabe in eine Datei 
 #PBS -q clmedium               # Batch-Klasse
-#
-#
-. /opt/intel/composer_xe_2013_sp1/bin/compilervars.sh intel64  # Initialisierung der Intel-Compiler Umgebung 
-. /opt/intel/impi/4.1.1.036/intel64/bin/mpivars.sh             # Initialisierung der Intel-MPI Umgebung 
-. /opt/modules/Modules/3.2.6/init/ksh                          # Initialisierung des Module-Konzeptes
-#
-# 
-cd $WORK/DENISE_SH_soil/par
-mpirun $NQSII_MPIOPTS -np 16 ../bin/denise DENISE_SH_soil.inp FWI_workflow_SH_soil.inp > DENISE_SH.out
+
+# Initialisierung der Intel-Umgebung
+module load intel16.0.3 intelmpi16.0.3
+ 
+cd $WORK/DENISE-SH/par
+mpirun $NQSII_MPIOPTS -np 32 ../bin/denise DENISE_SH_karlsgraben.inp FWI_workflow_SH_karlsgraben.inp > DENISE_SH.out
+
+# Ausgabe der verbrauchten Ressourcen (Rechenzeit, Hauptspeicher) nach Jobende
+/usr/bin/nqsII/qstat -f ${PBS_JOBID/0:}

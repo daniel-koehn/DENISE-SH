@@ -329,7 +329,7 @@ float *etajm, float *peta, float * hc, float * K_x, float * a_x, float * b_x);
 void  timedomain_filt(float ** data, float fc, int order, int ntr, int ns, int method);
 void  timedomain_filt_vector(float * data, float fc, int order, int ntr, int ns, int method);
 
-void time_window(float **sectiondata, float * picked_times, int iter, int ntr_glob, int **recpos_loc, int ntr, int ns, int ishot);
+void time_window(float **sectiondata, int iter, int ntr_glob, int ns, int ishot);
 
 void prepare_update_s(float *etajm, float *etaip, float *peta, float **fipjp, float **pu,
 float **puipjp, float **prho, float **ptaus,

@@ -1047,6 +1047,10 @@ for (nt=1;nt<=NT;nt++){
       /* --------------------------------- */
       inseis(fprec,ishot,sectionread,ntr_glob,ns,2,iter);
 
+      if(TIMEWIN){
+         time_window(sectionread, iter, ntr_glob, ns, ishot);
+      }
+
       if (TIME_FILT){
          timedomain_filt(sectionread,FC,ORDER,ntr_glob,ns,1);
    
@@ -1374,6 +1378,10 @@ if((ishot==itestshot)&&(ishot<=TESTSHOT_END)){swstestshot=1;}
 if((QUELLTYPB==1)||(QUELLTYPB==2)){ /* if QUELLTYPB */
 
 inseis(fprec,ishot,sectionread,ntr_glob,ns,2,iter);
+
+if(TIMEWIN){
+    time_window(sectionread, iter, ntr_glob, ns, ishot);
+}
 
 if (TIME_FILT){
 

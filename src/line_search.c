@@ -23,7 +23,7 @@ float line_search(FILE *fprec, float ** waveconv_rho, float ** waveconv_u, float
 extern int MYID, TIME_FILT, MIN_ITER, INVMAT, TIMELAPSE, QUELLTYPB, INV_STF, QUELLART, LNORM, NDT,ORDER_HESSIAN, ORDER, SEISMO;
 extern int NX, NY, L, NT, RUN_MULTIPLE_SHOTS, TESTSHOT_START, TESTSHOT_END, TESTSHOT_INCR;
 extern float EPS_SCALE, SCALEFAC, TSNAP1, DT, FC_HESSIAN, FC_START;
-extern int STEPMAX;
+extern int STEPMAX, TIMEWIN;
 
 /* local variables */	
 float opteps_vp, tmp, alphanom, alphadenom;
@@ -256,6 +256,10 @@ if (ntr > 0){
 if((QUELLTYPB==1)||(QUELLTYPB==2)){ /* if QUELLTYPB */
 
 inseis(fprec,ishot,sectionread,ntr_glob,ns,2,iter);
+
+if(TIMEWIN){
+    time_window(sectionread, iter, ntr_glob, ns, ishot);
+}
 
 if (TIME_FILT){
    

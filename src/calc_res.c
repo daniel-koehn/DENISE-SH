@@ -90,15 +90,6 @@ if((LNORM==5)&&(GRAD_FORM==1) ){
 
 } /* end of if LNORM==5 */
 
-if((TIMEWIN==1)||(TIMEWIN==2)){
-  
-  if((LNORM==5)&&(GRAD_FORM==1)){
-    time_window(integrated_sectiondata, picked_times, iter, ntr_glob,recpos_loc, ntr, ns, ishot);
-    time_window(integrated_section, picked_times, iter, ntr_glob,recpos_loc, ntr, ns, ishot);
-  }
-  
-}
-
 /* calculate weighted data residuals and reverse time direction */
 for(i=1;i<=ntr;i++){	
 	
@@ -232,15 +223,6 @@ for(i=1;i<=ntr;i++){
 						
 			invtime--;                                      /* reverse time direction */
        } 
-}
-
-if(TIMEWIN==3){
-  stalta(sectiondiff, ntr, ns, picked_times, ishot);
-  time_window(sectiondiff, picked_times, iter, ntr_glob,recpos_loc, ntr, ns, ishot);
-}
-
-if(TIMEWIN==4){
-  time_window(sectiondiff, picked_times, iter, ntr_glob,recpos_loc, ntr, ns, ishot);
 }
     
 
