@@ -13,8 +13,8 @@ DENISE-SH is distributed in the hope that it will be useful, but WITHOUT ANY WAR
 
 If you show modelling/inversion results in a paper or presentation please give a reference to the following papers:
 
-Daniel Koehn, Denise De Nil, Andre Kurzmann, Anna Przebindowska and Thomas Bohlen (2012): On the influence of model parametrization in elastic full waveform tomography, Geophysical Journal International, 191(1), 325-345.
-
-Daniel Koehn (2011): Time Domain 2D Elastic Full Waveform Tomography, PhD-Thesis, Kiel University Available at: http://nbn-resolving.de/urn:nbn:de:gbv:8-diss-67866
+Eva Dokter, Daniel Köhn, Dennis Wilken, Denise De Nil and Wolfgang Rabbel (2017): 
+Full-waveform inversion of SH- and Love-wave data in near-surface prospecting, 
+Geophysical Prospecting, DOI: 10.1111/1365-2478.12549
 
 Daniel Koehn
