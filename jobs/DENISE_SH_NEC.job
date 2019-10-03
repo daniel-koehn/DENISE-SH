@@ -17,4 +17,4 @@ cd $WORK/DENISE-SH/par
 mpirun $NQSII_MPIOPTS -np 32 ../bin/denise DENISE_SH_karlsgraben.inp FWI_workflow_SH_karlsgraben.inp > DENISE_SH.out
 
 # Ausgabe der verbrauchten Ressourcen (Rechenzeit, Hauptspeicher) nach Jobende
-/usr/bin/nqsII/qstat -f ${PBS_JOBID/0:}
+/opt/nec/nqsv/bin/qstat -f ${PBS_JOBID/0:/}
