@@ -72,8 +72,7 @@ float ** wavelet(float ** srcpos_loc, int nsrc, int ishot){
 					case 6 : 
 					        /* Bandlimited Spike */
 						amp=0.0;
-						if(nt==1+iround(tshift/DT)){
-						/*if(nt==1){*/
+						if(nt==1+iround(tshift/DT)){						
 						amp = 1.0;}
 					break;                                                                                                                                             	
 					default : 

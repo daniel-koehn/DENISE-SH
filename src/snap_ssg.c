@@ -50,7 +50,7 @@ void snap(FILE *fp, int nt, int nsnap, float **vy, float **syy, float **u, float
 		break;
 	}
 	
-	sprintf(snapfile_y,"%s%s.y.%i%i",SNAP_FILE,ext,POS[1],POS[2]);
+	sprintf(snapfile_y,"%s%s.y.%i.%i",SNAP_FILE,ext,POS[1],POS[2]);
 	fprintf(fp,"\n\n PE %d is writing snapshot-data at T=%fs to \n",MYID,nt*DT);
 	
 	

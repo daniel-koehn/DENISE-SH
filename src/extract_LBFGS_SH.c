@@ -69,7 +69,7 @@ if(iter>1){
 /* ------------------ */
 
     /* save old model */
-	sprintf(jac,"%s_p_vs.old.%i%i",JACOBIAN,POS[1],POS[2]);
+	sprintf(jac,"%s_p_vs.old.%i.%i",JACOBIAN,POS[1],POS[2]);
 	FP3=fopen(jac,"wb");
 
         for (i=1;i<=NX;i=i+IDX){
@@ -87,7 +87,7 @@ if(iter>1){
 	if (MYID==0) mergemod(jac,3);
 
 	/* save old gradient */
-	sprintf(jac,"%s_p_u.old.%i%i",JACOBIAN,POS[1],POS[2]);
+	sprintf(jac,"%s_p_u.old.%i.%i",JACOBIAN,POS[1],POS[2]);
 	FP3=fopen(jac,"wb");
 
         for (i=1;i<=NX;i=i+IDX){
@@ -105,7 +105,7 @@ if(iter>1){
 	if (MYID==0) mergemod(jac,3);
 	
 	/* save H^-1 * g */
-        sprintf(jac,"%s_c_u.old.%i%i",JACOBIAN,POS[1],POS[2]);
+        sprintf(jac,"%s_c_u.old.%i.%i",JACOBIAN,POS[1],POS[2]);
 	FP3=fopen(jac,"wb");
 	
 	for (i=1;i<=NX;i=i+IDX){   
@@ -125,7 +125,7 @@ if(iter>1){
 /* save old models Rho */
 /* ------------------ */
 
-	sprintf(jac,"%s_p_mrho.old.%i%i",JACOBIAN,POS[1],POS[2]);
+	sprintf(jac,"%s_p_mrho.old.%i.%i",JACOBIAN,POS[1],POS[2]);
 	FP3=fopen(jac,"wb");
 
         for (i=1;i<=NX;i=i+IDX){
@@ -143,7 +143,7 @@ if(iter>1){
 	if (MYID==0) mergemod(jac,3);
 
 	/* save old gradient */
-	sprintf(jac,"%s_p_rho.old.%i%i",JACOBIAN,POS[1],POS[2]);
+	sprintf(jac,"%s_p_rho.old.%i.%i",JACOBIAN,POS[1],POS[2]);
 	FP3=fopen(jac,"wb");
 
         for (i=1;i<=NX;i=i+IDX){
@@ -161,7 +161,7 @@ if(iter>1){
 	if (MYID==0) mergemod(jac,3);
 	
 	/* save H^-1 * g_rho */
-        sprintf(jac,"%s_c_rho.old.%i%i",JACOBIAN,POS[1],POS[2]);
+        sprintf(jac,"%s_c_rho.old.%i.%i",JACOBIAN,POS[1],POS[2]);
 	FP3=fopen(jac,"wb");
 	
 	for (i=1;i<=NX;i=i+IDX){   

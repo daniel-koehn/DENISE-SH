@@ -23,8 +23,10 @@ EXEC= ../bin
 CC=mpiicc
 LFLAGS=-lm -lcseife -lfftw3 -ftz -lstdc++
 CFLAGS=-O3 -xAVX -ipo -fno-fnalias -restrict
-SFLAGS=-L./../libcseife -L$//sfs/fs4/work-sh2/sungw331/fftw-3.3.4/lib
-IFLAGS=-I./../libcseife -I$//sfs/fs4/work-sh2/sungw331/fftw-3.3.4/include
+#SFLAGS=-L./../libcseife -L$//sfs/fs2/work-sh2/sungw409/fftw-3.3.4/lib
+#IFLAGS=-I./../libcseife -I$//sfs/fs2/work-sh2/sungw409/fftw-3.3.4/include
+SFLAGS=-L./../libcseife -L$//sfs/fs2/work-sh2/sungw331/fftw-3.3.4/lib
+IFLAGS=-I./../libcseife -I$//sfs/fs2/work-sh2/sungw331/fftw-3.3.4/include
 
 # On Desktop computer with LinuxMint 17, OpenMPI and gcc 4.8.2
 #CC=mpicc
@@ -263,6 +265,7 @@ DENISE= \
 	eprecond.c \
 	eprecond1.c \
 	gauss_filt.c \
+	gauss_filt_var.c \
 	grad_FD.c \
 	snap_ssg.c \
 	seismo_ssg.c \

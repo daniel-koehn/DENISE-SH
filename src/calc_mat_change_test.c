@@ -203,7 +203,7 @@ float calc_mat_change_test(float  **  waveconv_rho, float  **  waveconv_u, float
 
         if (MYID==0) mergemod(modfile,3);
 	MPI_Barrier(MPI_COMM_WORLD);
-	sprintf(modfile,"%s_vs.bin.%i%i",INV_MODELFILE,POS[1],POS[2]);
+	sprintf(modfile,"%s_vs.bin.%i.%i",INV_MODELFILE,POS[1],POS[2]);
 	remove(modfile);
 	                        
 
@@ -216,7 +216,7 @@ float calc_mat_change_test(float  **  waveconv_rho, float  **  waveconv_u, float
 
         if (MYID==0) mergemod(modfile,3);}
 	MPI_Barrier(MPI_COMM_WORLD);
-	sprintf(modfile,"%s_rho.bin.%i%i",INV_MODELFILE,POS[1],POS[2]);         
+	sprintf(modfile,"%s_rho.bin.%i.%i",INV_MODELFILE,POS[1],POS[2]);         
 	remove(modfile);
         
         if((itest==0)&&(iter==nfstart)){
@@ -228,7 +228,7 @@ float calc_mat_change_test(float  **  waveconv_rho, float  **  waveconv_u, float
                                                                                                         
 	if (MYID==0) mergemod(modfile,3);
 	MPI_Barrier(MPI_COMM_WORLD); 
-	sprintf(modfile,"%s_vs_it_%d.bin.%i%i",INV_MODELFILE,iter,POS[1],POS[2]);
+	sprintf(modfile,"%s_vs_it_%d.bin.%i.%i",INV_MODELFILE,iter,POS[1],POS[2]);
 	remove(modfile);                                                                                                                        
                                                                                                                                 
 	/*sprintf(modfile,"model/waveform_test_model_rho_it_%d.bin",iter);*/
@@ -238,7 +238,7 @@ float calc_mat_change_test(float  **  waveconv_rho, float  **  waveconv_u, float
                                                                                                                                                                         
 	if (MYID==0) mergemod(modfile,3);}
 	MPI_Barrier(MPI_COMM_WORLD); 
-	sprintf(modfile,"%s_rho_it_%d.bin.%i%i",INV_MODELFILE,iter,POS[1],POS[2]);
+	sprintf(modfile,"%s_rho_it_%d.bin.%i.%i",INV_MODELFILE,iter,POS[1],POS[2]);
 	remove(modfile);
 
 	return eps_true;

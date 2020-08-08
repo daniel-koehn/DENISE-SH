@@ -27,7 +27,7 @@ void median_src(float ** waveconv,float ** taper_coeff, float **srcpos, int nsho
         gradtmp1 = matrix(1,NYG,1,NXG);        
 
         /* temporarily save gradient for median filtering at source positions */
-        sprintf(jac,"%s_wavenumber.old.%i%i",JACOBIAN,POS[1],POS[2]);
+        sprintf(jac,"%s_wavenumber.old.%i.%i",JACOBIAN,POS[1],POS[2]);
         FP3=fopen(jac,"wb");
                         
         for (i=1;i<=NX;i=i+IDX){

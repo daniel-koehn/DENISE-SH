@@ -147,6 +147,9 @@ float M2, M2_vs, M2_rho;
 float * PCG_old, * PCG_new, * PCG_dir;
 int PCG_class, PCG_vec;
 
+/* Option for snapshots of adjoint wavefield */
+int SNAPBACK, SNAPSHOT;
+
 FILE *fprec, *FP2, *FP3, *FP4, *FP5, *FPL2, *FP6, *FP7, *FP_stage;
 	
 MPI_Request *req_send, *req_rec;
@@ -410,6 +413,10 @@ if(RTM==1){
   TIMELAPSE=0;
   INVMAT=0; 
 }
+
+/* Options for SNAPBACK */
+SNAPBACK=1;     /* activate snapshot creation for adjoint wavefield */
+SNAPSHOT=1;     /* output of snapshots for shot no. SNAPSHOT */ 
       
 lamr=0.01; /* Marquardt factor */
 
@@ -866,7 +873,9 @@ if (RUN_MULTIPLE_SHOTS) nshots=nsrc; else nshots=1;
 
 
 for (ishot=1;ishot<=nshots;ishot+=SHOTINC){
-/*for (ishot=1;ishot<=1;ishot+=1){ */
+/*if (ishot!=5){
+for (ishot=1;ishot<=41;ishot+=1){*/
+/*if ((ishot!=40)&&(ishot!=46)&&(ishot!=49)){*/
 
 /* estimate source time function by Wiener deconvolution */
 if((INV_STF!=0)&&(iter==1)&&(INVMAT!=10)){
@@ -1014,14 +1023,6 @@ for (nt=1;nt<=NT;nt++){
 	if (SEISMO){
 		seismo_ssg(nt, ntr, recpos_loc, sectionvy, pvy, psyz, pu, hc);
 	}
-
-   /* WRITE SNAPSHOTS TO DISK */
-   /*if ((SNAP) && (nt==lsnap) && (nt<=TSNAP2/DT)){
-
-      snap(FP,nt,++nsnap,pvy,psyz,pu,hc);
-
-      lsnap=lsnap+iround(TSNAPINC/DT);
-   }*/
 
    
       
@@ -1326,7 +1327,7 @@ DTINV_help[nt]=1;
 }
 
    /* WRITE SNAPSHOTS TO DISK */
-   if ((SNAP) && (nt==lsnap) && (nt<=TSNAP2/DT)){
+   if ((SNAPBACK==0) && (nt==lsnap) && (nt<=TSNAP2/DT)){
 
       snap(FP,nt,++nsnap,pvy,psyz,pu,hc);
 
@@ -1633,7 +1634,7 @@ for (nt=1;nt<=NT;nt++){
     }
      
    /* WRITE SNAPSHOTS TO DISK */
-   if ((SNAP) && (nt==lsnap) && (nt<=TSNAP2/DT)){
+   if ((SNAPBACK==1) && (ishot==SNAPSHOT) && (nt==lsnap) && (nt<=TSNAP2/DT)){
 
       snap(FP,nt,++nsnap,pvy,psyz,pu,hc);
 
@@ -1697,6 +1698,7 @@ for(i=1;i<=NX;i=i+IDX){
 } /* end of invmat==10 */
 nsrc_loc=0;
 
+/*}*/ /* end of if (ishot!=5) */
 } /* end of loop over shots (forward and backpropagation) */   
 
 /* save Hessian */
@@ -1813,8 +1815,8 @@ interpol(IDXI,IDYI,waveconv_rho,1);
 } /* end of RTM == 0 */
 
     /* apply smoothness constraints to gradients */
-    smooth_grad(waveconv_u);
-    smooth_grad(waveconv_rho);
+    smooth_grad(waveconv_u, pu);
+    smooth_grad(waveconv_rho, pu);
 
     /* Preconditioning of gradients after shot summation and smoothing */
     /*================== TAPER Vs/Zs/mu ===========================*/
@@ -1843,17 +1845,7 @@ interpol(IDXI,IDYI,waveconv_rho,1);
 
     if (SWS_TAPER_FILE){ /* read taper from file */
         taper_grad(waveconv_rho,taper_coeff,srcpos,nsrc,recpos,ntr_glob,iter,6);}
-
-if(RTM==1){
- 
-    /* write RTM image / gradient direction */
-    if(RTM==1){sprintf(jac,"%s_S_image.bin",JACOBIAN);}
-    if(RTM==0){sprintf(jac,"%s_grad_vs.bin",JACOBIAN);}
-    writemod(jac,waveconv_u,3);
-    MPI_Barrier(MPI_COMM_WORLD);
-    if (MYID==0) mergemod(jac,3);
-
-}
+	
 
 if((RTM==0)&&(GRAD_METHOD==1)&&(INVMAT!=10)){
 
@@ -1893,6 +1885,13 @@ if((RTM==0)&&(GRAD_METHOD==2)&&(INVMAT!=10)){
 
 }
 
+/* write RTM image / gradient direction */
+if(RTM==1){sprintf(jac,"%s_S_image.bin",JACOBIAN);}
+if(RTM==0){sprintf(jac,"%s_grad_vs.bin",JACOBIAN);}
+writemod(jac,waveconv_u,3);
+MPI_Barrier(MPI_COMM_WORLD);
+if (MYID==0) mergemod(jac,3);
+	
 opteps_vp=0.0;
 opteps_vs=0.0;
 opteps_rho=0.0;

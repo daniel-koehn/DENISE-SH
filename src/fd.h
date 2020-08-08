@@ -132,6 +132,8 @@ void extract_PCG_SH(float * PCG_old, float ** waveconv_u, float ** waveconv_rho)
 
 void gauss_filt(float ** waveconv);
 
+void gauss_filt_var(float ** waveconv, float ** vel_mod);
+
 void grad_FD(float ** grad_vy, float ** gradi_vy, float ** grad_syz, float ** gradi_syz, 
 float ** grad_sxy, float ** gradi_sxy, float ** grad_vyb, float ** gradi_vyb, float ** grad_syzb, 
 float ** gradi_syzb, float ** grad_sxyb, float ** gradi_sxyb, float ** pu, float ** prho,
@@ -463,7 +465,7 @@ void zero_PCG(float * PCG_old, float * PCG_new, float * PCG_dir, int PCG_vec);
 		 
 void FLnode(float  **  rho, float **  u, float **  taus, float *  eta);
 
-void smooth_grad(float ** waveconv);
+void smooth_grad(float ** waveconv, float ** vel_mod);
 
 /* declaration of functions for parser*/
 

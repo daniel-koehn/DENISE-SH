@@ -17,7 +17,7 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 
 	int i, j,l,fdoh,m, h, h1;
 	float amp, dtdh, azi_rad;
-	float vxtmp, vytmp;
+	float vxtmp, vytmp, b;
         float syy_y, sxy_x;
 	
 	extern float DT, DH, ANGLE;
@@ -103,7 +103,10 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
                               
         } /* end of PML */ 
                          
-                           if(sw==0){vyp1[j][i] = (sxy_x+syy_y)/(rho[j][i]*DH);}
+			   b = 1.0 / rho[j][i]; 
+			   if(rho[j][i]<1e-20){b = 0.0;}			    
+			 
+                           if(sw==0){vyp1[j][i] = b * (sxy_x+syy_y)/DH;}
 
 
 			   if(sw==1){
@@ -118,7 +121,7 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 			   
 			   }                                           
  
-		           vy[j][i] += DT*(sxy_x+syy_y)/(rho[j][i]*DH); 		         
+		           vy[j][i] += b * DT * (sxy_x+syy_y) / DH; 		         
       
      }
 }
@@ -175,7 +178,10 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
                            
         }                       
                            
-                           if(sw==0){vyp1[j][i] = (sxy_x+syy_y)/(rho[j][i]*DH);}
+			   b = 1.0 / rho[j][i]; 
+			   if(rho[j][i]<1e-20){b = 0.0;}			    
+			 
+                           if(sw==0){vyp1[j][i] = b * (sxy_x+syy_y)/DH;}			                              
 
                            if(sw==1){
 			   
@@ -189,7 +195,7 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 			   
 			   }
                            
-		           vy[j][i] += DT*(sxy_x+syy_y)/(rho[j][i]*DH); 		         
+		           vy[j][i] += b * DT * (sxy_x+syy_y) / DH; 		         
       
      }
 }
@@ -246,8 +252,10 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 						   syy_y = syy_y / K_y[h1] + psi_syy_y[h1][i];
 
         }                       
-                           
-                           if(sw==0){vyp1[j][i] = (sxy_x+syy_y)/(rho[j][i]*DH);}
+                           b = 1.0 / rho[j][i]; 
+			   if(rho[j][i]<1e-20){b = 0.0;}			    
+			 
+                           if(sw==0){vyp1[j][i] = b * (sxy_x+syy_y)/DH;}                           
                            
                            if(sw==1){
 			   
@@ -261,7 +269,7 @@ void update_v_PML(int nx1, int nx2, int ny1, int ny2, int nt, float ** vy, float
 			   
 			   }
                            
-                           vy[j][i] += DT*(sxy_x+syy_y)/(rho[j][i]*DH); 		         
+                           vy[j][i] += b * DT * (sxy_x+syy_y) / DH; 		         
       
      }
 }
@@ -327,7 +335,10 @@ for (j=ny1;j<=ny2;j++){
 
         }                       
                            
-                           if(sw==0){vyp1[j][i] = (sxy_x+syy_y)/(rho[j][i]*DH);}
+			   b = 1.0 / rho[j][i]; 
+			   if(rho[j][i]<1e-20){b = 0.0;}			    
+			 
+                           if(sw==0){vyp1[j][i] = b * (sxy_x+syy_y)/DH;}			                              
                            
                            if(sw==1){
 			   
@@ -341,7 +352,7 @@ for (j=ny1;j<=ny2;j++){
 			   
 			   }
                            
-                           vy[j][i] += DT*(sxy_x+syy_y)/(rho[j][i]*DH); 		         
+                           vy[j][i] += b * DT * (sxy_x+syy_y) / DH; 		         
       
      }
 }

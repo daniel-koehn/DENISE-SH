@@ -39,7 +39,7 @@ void taper_grad(float ** waveconv,float ** taper_coeff, float **srcpos, int nsho
 	SRTRADIUS=25.0;
 	filtsize=2;*/
 
-        EXP_TAPER_GRAD_HOR = 4.0;
+        EXP_TAPER_GRAD_HOR = 1.0;
 
     /* =============== */
     /* Vertical taper  */
@@ -536,13 +536,13 @@ void taper_grad(float ** waveconv,float ** taper_coeff, float **srcpos, int nsho
         
         /*if(sws==4){fp_taper=fopen("hessian.bin","r");}*/
         if(sws==5){
-          sprintf(jac,"%s_hessian_u",JACOBIAN);
+          sprintf(jac,"taper.bin");
           fp_taper=fopen(jac,"r");
           beta = 1e-3;
         }
 
         if(sws==6){
-          sprintf(jac,"%s_hessian_rho",JACOBIAN);
+          sprintf(jac,"taper.bin");
           fp_taper=fopen(jac,"r");
           beta = 1e-7;
         }
@@ -562,32 +562,14 @@ void taper_grad(float ** waveconv,float ** taper_coeff, float **srcpos, int nsho
                 }
             }
         }
-
-        /* estimate maximum value of Hessian */
-        maxhesstmp=0.0;
-        for (i=1;i<=NX;i++){
-                for (j=1;j<=NY;j++){
-
-                        /* estimate maximum Hessian on this CPU*/
-                        if(taper_coeff[j][i]>maxhesstmp){
-                          maxhesstmp = taper_coeff[j][i];
-                        }
-
-                }
-        }
-
-        /* estimate maximum of Hessian on all CPUs */
-        MPI_Allreduce(&maxhesstmp,&maxhess,1,MPI_FLOAT,MPI_MAX,MPI_COMM_WORLD);
-
-        /* calculate Lagrange multiplier for current iteration */
-        /*beta = pow(0.01/10.0,(iter-1)/50.0);*/         
+        
         
         if(MYID==0){printf("Lagrange multiplier at current iteration: %e \n",beta);}        
 
         /* apply regularization to Hessian and scale gradient */
         for (j=1;j<=NY;j++){   
            for (i=1;i<=NX;i++){     
-              waveconv[j][i]=waveconv[j][i]/(taper_coeff[j][i]+(beta*maxhess));
+              waveconv[j][i]*=taper_coeff[j][i];
            }                            
         }   
                                          
@@ -600,6 +582,3 @@ void taper_grad(float ** waveconv,float ** taper_coeff, float **srcpos, int nsho
         if (MYID==0) mergemod(modfile,3);       
         } 
 }
-
-
-
