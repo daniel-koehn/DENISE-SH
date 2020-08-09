@@ -101,7 +101,7 @@ int NFREQ;
 float FC_HESS_START, FC_HESS_INC;
 
 /* parameters for wavenumber domain  damping */
-float WD_DAMP;
+float WD_DAMP, WD_DAMP1;
 
 /* parameters for offset muting */
 float OFFSETC;

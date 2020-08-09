@@ -22,15 +22,15 @@ extern int INV_STF;
 extern float PRO, FC_START, FC_END, EPS_STF, OFFSETC, OFFSETC_STF; 
 extern int TIMEWIN;
 extern float TWLENGTH_PLUS, TWLENGTH_MINUS, GAMMA;
-extern float WD_DAMP, SCALERHO;
+extern float WD_DAMP, WD_DAMP1, SCALERHO;
 
 /* definition of local variables */
 int i;
 char str [80];
 
-fscanf(fp,"%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str);
+fscanf(fp,"%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str,str);
 for (i=1;i<=nstage;i++){
-    fscanf(fp,"%f%i%f%f%i%i%f%f%f%i%i%i%i%f%i%i%i%f%f%i%i%f%f",&PRO,&TIME_FILT,&FC_START,&FC_END,&ORDER,&TIMEWIN,&GAMMA,&TWLENGTH_MINUS,&TWLENGTH_PLUS,&INV_VP_ITER,&INV_VS_ITER,&INV_RHO_ITER,&SPATFILTER,&WD_DAMP,&EPRECOND,&LNORM,&INV_STF,&OFFSETC_STF,&EPS_STF,&NORMALIZE,&OFFSET_MUTE,&OFFSETC,&SCALERHO);
+    fscanf(fp,"%f%i%f%f%i%i%f%f%f%i%i%i%i%f%f%i%i%i%f%f%i%i%f%f",&PRO,&TIME_FILT,&FC_START,&FC_END,&ORDER,&TIMEWIN,&GAMMA,&TWLENGTH_MINUS,&TWLENGTH_PLUS,&INV_VP_ITER,&INV_VS_ITER,&INV_RHO_ITER,&SPATFILTER,&WD_DAMP1,&WD_DAMP,&EPRECOND,&LNORM,&INV_STF,&OFFSETC_STF,&EPS_STF,&NORMALIZE,&OFFSET_MUTE,&OFFSETC,&SCALERHO);
 }
 
 fclose(fp);
@@ -49,7 +49,7 @@ if(MYID==0){
    printf(" Smoothing (spatial filtering) of the gradients: \n ");
    if(SPATFILTER==1){
      printf(" \tSPATFILTER=%d: Gradients are smoothed.\n",SPATFILTER);
-     printf(" \t(SPAT_FILT_SIZE=%d, SPAT_FILT_1=%d, SPAT_FILT_ITER=%d, WD_DAMP = %e)\n",SPAT_FILT_SIZE,SPAT_FILT_1,SPAT_FILT_ITER,WD_DAMP);}
+     printf(" \t(SPAT_FILT_SIZE=%d, SPAT_FILT_1=%d, SPAT_FILT_ITER=%d, WD_DAMP = %e, WD_DAMP1 = %e)\n",SPAT_FILT_SIZE,SPAT_FILT_1,SPAT_FILT_ITER,WD_DAMP,WD_DAMP1);}
      else 	printf(" \tSPATFILTER=%d: Gradients are not smoothed.\n",SPATFILTER);
    
    printf("\n\n");

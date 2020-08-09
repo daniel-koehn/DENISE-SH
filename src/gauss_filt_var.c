@@ -12,7 +12,7 @@ void gauss_filt_var(float ** waveconv, float ** vel_mod)
 
 	/* extern variables */
 
-        extern float DH, WD_DAMP, FC_END, C_vs;
+        extern float DH, WD_DAMP, WD_DAMP1, FC_END, C_vs;
 	extern int FREE_SURF, NX, NY, NXG, NYG, IDX, IDY;
 	extern int NPROCX, NPROCY, MYID, POS[3];
 	extern char JACOBIAN[STRING_SIZE];
@@ -24,14 +24,12 @@ void gauss_filt_var(float ** waveconv, float ** vel_mod)
 	int i1, j1, filtsize, hfsx, hfsz, hfsmax;
 
 	float **model_tmp, **grad_tmp, ** grad_gauss, grad, mod, normgauss;
-	float lam, lam_max, sigmax, sx, sigmaz, sz, sum, conv, vel_max, kernel, WD_DAMP1;
+	float lam, lam_max, sigmax, sx, sigmaz, sz, sum, conv, vel_max, kernel;
 	
 	char jac_tmp[STRING_SIZE];
 	char modfile[STRING_SIZE];
 	
-	FILE *model, *FP1;
-	
-	WD_DAMP1 = 0.5;
+	FILE *model, *FP1;	
 	
 	/* temporarily save gradient for Gaussian filtering */
         sprintf(jac_tmp,"%s_gauss.old.%i.%i",JACOBIAN,POS[1],POS[2]);
@@ -93,6 +91,10 @@ void gauss_filt_var(float ** waveconv, float ** vel_mod)
 			/* define maximum filter size as fraction of maximum velocity wavelength */
 			lam_max = vel_max / FC_END;
 			FILT_SIZE_GRAD = round((WD_DAMP1 * lam_max)/DH);
+
+			if(WD_DAMP > WD_DAMP1){
+			    FILT_SIZE_GRAD = round((WD_DAMP * lam_max)/DH);
+			}
 			
 		      	if (!(FILT_SIZE_GRAD % 2)) {
 		      	    FILT_SIZE_GRAD += 1;
@@ -187,6 +189,7 @@ void gauss_filt_var(float ** waveconv, float ** vel_mod)
 
           		            conv = 0.0;
 				    sum = 0.0;
+
           		            /* loop over kernel*/
 	  			    for (ii=-hfsx;ii<=hfsx;ii++){
 	       			        for (jj=-hfsz;jj<=hfsz;jj++){
