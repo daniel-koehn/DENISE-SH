@@ -361,21 +361,184 @@ for (j=ny1;j<=ny2;j++){
 		break;
 		
 	case 10:
+	
 		for (j=ny1;j<=ny2;j++){
 			for (i=nx1;i<=nx2;i++){
-						
-				
-			}
+			   
+			   sxy_x =  hc[1]*(sxy[j][i]-sxy[j][i-1])
+				 +  hc[2]*(sxy[j][i+1]-sxy[j][i-2])
+				 +  hc[3]*(sxy[j][i+2]-sxy[j][i-3])
+				 +  hc[4]*(sxy[j][i+3]-sxy[j][i-4])
+				 +  hc[5]*(sxy[j][i+4]-sxy[j][i-5]);			   
+                          
+			   syy_y =  hc[1]*(syz[j][i]-syz[j-1][i])
+				 +  hc[2]*(syz[j+1][i]-syz[j-2][i])
+				 +  hc[3]*(syz[j+2][i]-syz[j-3][i])
+				 +  hc[4]*(syz[j+3][i]-syz[j-4][i])
+				 +  hc[5]*(syz[j+4][i]-syz[j-5][i]);
+			  
+
+        /* apply PML */
+        if(FW>0){
+        
+		/* left boundary */                                         
+		if((!BOUNDARY) && (POS[1]==0) && (i<=FW)){
+			         
+                	           psi_sxy_x[j][i] = b_x[i] * psi_sxy_x[j][i] + a_x[i] * sxy_x;                                                
+                        	   sxy_x = sxy_x / K_x[i] + psi_sxy_x[j][i];
+              
 		}
+
+		/* right boundary */                                         
+		if((!BOUNDARY) && (POS[1]==NPROCX-1) && (i>=nx2-FW+1)){
+
+                           h1 = (i-nx2+2*FW);
+                            h=i; 
+                                
+                     
+                           psi_sxy_x[j][h1] = b_x[h1] * psi_sxy_x[j][h1] + a_x[h1] * sxy_x;                                                
+                           sxy_x = sxy_x / K_x[h1] + psi_sxy_x[j][h1];
+		}
+
+         
+		/* top boundary */                                         
+		if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
+					   
+			   psi_syy_y[j][i] = b_y[j] * psi_syy_y[j][i] + a_y[j] * syy_y;                                                
+                           syy_y = syy_y / K_y[j] + psi_syy_y[j][i]; 
+                        
+                    
+		}
+		
+
+		/* bottom boundary */                                         
+		if((POS[2]==NPROCY-1) && (j>=ny2-FW+1)){
+                        
+                           h1 = (j-ny2+2*FW);
+			    h = j;
+		            		
+                           
+                           psi_syy_y[h1][i] = b_y[h1] * psi_syy_y[h1][i] + a_y[h1] * syy_y;                                                
+			   syy_y = syy_y / K_y[h1] + psi_syy_y[h1][i]; 
+
+		}
+                              
+        } /* end of PML */ 
+                         
+			   b = 1.0 / rho[j][i]; 
+			   if(rho[j][i]<1e-20){b = 0.0;}			    
+			 
+                           if(sw==0){vyp1[j][i] = b * (sxy_x+syy_y)/DH;}
+
+
+			   if(sw==1){
+			   
+			      if(GRAD_FORM==2){   /* FWI without data integration */
+			        vyp1[j][i] = vy[j][i];
+			      }
+			      
+			      if(GRAD_FORM==1){   /* FWI with data integration */
+			        vyp1[j][i] += vy[j][i]*DT;
+			      }
+			   
+			   }                                           
+ 
+		           vy[j][i] += b * DT * (sxy_x+syy_y) / DH; 		         
+      
+     }
+}
+
 		break;
 
 	case 12:
 		for (j=ny1;j<=ny2;j++){
 			for (i=nx1;i<=nx2;i++){
-						
-				
-			}
+			   
+			   sxy_x =  hc[1]*(sxy[j][i]-sxy[j][i-1])
+				 +  hc[2]*(sxy[j][i+1]-sxy[j][i-2])
+				 +  hc[3]*(sxy[j][i+2]-sxy[j][i-3])
+				 +  hc[4]*(sxy[j][i+3]-sxy[j][i-4])
+				 +  hc[5]*(sxy[j][i+4]-sxy[j][i-5])
+				 +  hc[6]*(sxy[j][i+5]-sxy[j][i-6]);			   
+                          
+			   syy_y =  hc[1]*(syz[j][i]-syz[j-1][i])
+				 +  hc[2]*(syz[j+1][i]-syz[j-2][i])
+				 +  hc[3]*(syz[j+2][i]-syz[j-3][i])
+				 +  hc[4]*(syz[j+3][i]-syz[j-4][i])
+				 +  hc[5]*(syz[j+4][i]-syz[j-5][i])
+				 +  hc[5]*(syz[j+5][i]-syz[j-6][i]);
+			  
+
+        /* apply PML */
+        if(FW>0){
+        
+		/* left boundary */                                         
+		if((!BOUNDARY) && (POS[1]==0) && (i<=FW)){
+			         
+                	           psi_sxy_x[j][i] = b_x[i] * psi_sxy_x[j][i] + a_x[i] * sxy_x;                                                
+                        	   sxy_x = sxy_x / K_x[i] + psi_sxy_x[j][i];
+              
 		}
+
+		/* right boundary */                                         
+		if((!BOUNDARY) && (POS[1]==NPROCX-1) && (i>=nx2-FW+1)){
+
+                           h1 = (i-nx2+2*FW);
+                            h=i; 
+                                
+                     
+                           psi_sxy_x[j][h1] = b_x[h1] * psi_sxy_x[j][h1] + a_x[h1] * sxy_x;                                                
+                           sxy_x = sxy_x / K_x[h1] + psi_sxy_x[j][h1];
+		}
+
+         
+		/* top boundary */                                         
+		if((POS[2]==0) && (!(FREE_SURF)) && (j<=FW)){
+					   
+			   psi_syy_y[j][i] = b_y[j] * psi_syy_y[j][i] + a_y[j] * syy_y;                                                
+                           syy_y = syy_y / K_y[j] + psi_syy_y[j][i]; 
+                        
+                    
+		}
+		
+
+		/* bottom boundary */                                         
+		if((POS[2]==NPROCY-1) && (j>=ny2-FW+1)){
+                        
+                           h1 = (j-ny2+2*FW);
+			    h = j;
+		            		
+                           
+                           psi_syy_y[h1][i] = b_y[h1] * psi_syy_y[h1][i] + a_y[h1] * syy_y;                                                
+			   syy_y = syy_y / K_y[h1] + psi_syy_y[h1][i]; 
+
+		}
+                              
+        } /* end of PML */ 
+                         
+			   b = 1.0 / rho[j][i]; 
+			   if(rho[j][i]<1e-20){b = 0.0;}			    
+			 
+                           if(sw==0){vyp1[j][i] = b * (sxy_x+syy_y)/DH;}
+
+
+			   if(sw==1){
+			   
+			      if(GRAD_FORM==2){   /* FWI without data integration */
+			        vyp1[j][i] = vy[j][i];
+			      }
+			      
+			      if(GRAD_FORM==1){   /* FWI with data integration */
+			        vyp1[j][i] += vy[j][i]*DT;
+			      }
+			   
+			   }                                           
+ 
+		           vy[j][i] += b * DT * (sxy_x+syy_y) / DH; 		         
+      
+     }
+}
+
 		break;
 		
 	default:

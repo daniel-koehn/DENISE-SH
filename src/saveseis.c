@@ -8,7 +8,7 @@
 void saveseis(FILE *fp, float **sectionvy,  int  **recpos, int  **recpos_loc, 
 int ntr, float ** srcpos, int ishot, int ns, int iter){ 
 		
-	extern int SEISMO, SEIS_FORMAT, MYID, RUN_MULTIPLE_SHOTS;	
+	extern int SEISMO, SEIS_FORMAT, MYID, RUN_MULTIPLE_SHOTS, INVMAT;	
 	extern char  SEIS_FILE_VX[STRING_SIZE], SEIS_FILE_VY[STRING_SIZE];
 	extern char  SEIS_FILE_CURL[STRING_SIZE], SEIS_FILE_DIV[STRING_SIZE], SEIS_FILE_P[STRING_SIZE];
 
@@ -30,16 +30,25 @@ int ntr, float ** srcpos, int ishot, int ns, int iter){
         }*/
 
 	
-	if(iter>0){
+	if(INVMAT==0){
 	
-	sprintf(vyf,"%s.shot%d_it%d.%d",SEIS_FILE_VY,ishot,iter,MYID);
+	    if(iter>0){
 	
+	        sprintf(vyf,"%s.shot%d_it%d.%d",SEIS_FILE_VY,ishot,iter,MYID);
+	
+	    }
+	
+	    if(iter==-1){
+	
+	        sprintf(vyf,"%s.shot%d_it%d.%d",SEIS_FILE_VY,ishot,iter,MYID);
+	
+	    }
 	}
 	
-	if(iter==-1){
+	if(INVMAT==10){
 	
-	sprintf(vyf,"%s.shot%d_it%d.%d",SEIS_FILE_VY,ishot,iter,MYID);
-	
+	        sprintf(vyf,"%s.shot%d.%d",SEIS_FILE_VY,ishot,MYID);
+
 	}
 	
 	
